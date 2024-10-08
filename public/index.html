@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>CityGuide</title>
-    <script>
+    <!-- <script>
       async function init() {
         await customElements.whenDefined("gmp-map");
 
@@ -45,11 +45,13 @@
       }
 
       document.addEventListener("DOMContentLoaded", init);
-    </script>
-    <script
+    </script>-->
+    <!-- <script
       type="module"
       src="https://unpkg.com/@googlemaps/extended-component-library@0.6"
-    ></script>
+    ></script>  -->
+    <!-- <script 
+      src="https://maps.googleapis.com/maps/api/js?sensor=false&callback=initMap" async defer></script> -->
     <style>
       html,
       body {
@@ -64,7 +66,7 @@
     </style>
   </head>
   <body>
-    <gmpx-api-loader
+    <!-- <gmpx-api-loader
       key="AIzaSyA-iuBOU504-6rBwFM1nubrim7NM1FM1OE"
       solution-channel="GMP_devsite_samples_v3_rgmbasicmap"
     >
@@ -77,6 +79,7 @@
         <gmpx-place-picker placeholder="Enter an address"></gmpx-place-picker>
       </div>
       <gmp-advanced-marker></gmp-advanced-marker>
-    </gmp-map>
+    </gmp-map> -->
+    <div id="root"></div>
   </body>
 </html>
