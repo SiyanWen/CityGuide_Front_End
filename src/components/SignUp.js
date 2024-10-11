@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Input, Button, message } from "antd";
+import { Form, Input, Button, message, Upload } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
@@ -77,7 +78,7 @@ function SignUp(props) {
       >
         <Form.Item
           name="username"
-          label="Username"
+          label={<span style={{ fontWeight: "bold" }}>Username</span>}
           rules={[
             {
               required: true,
@@ -85,11 +86,22 @@ function SignUp(props) {
             },
           ]}
         >
-          <Input />
+          <Input
+            placeholder="TYPE IN YOUR NAME"
+            style={{
+              width: "300px", // 固定宽度为400px
+              border: "1px solid #D3D3D3", // 边框颜色
+              borderRadius: "6px", // 圆角
+              padding: "10px", // 内边距
+              height: "40px", // 输入框高度
+            }}
+            onFocus={(e) => (e.target.placeholder = "")}
+            onBlur={(e) => (e.target.placeholder = "TYPE IN YOUR EMAIL")}
+          />
         </Form.Item>
         <Form.Item
           name="email"
-          label="Email"
+          label={<span style={{ fontWeight: "bold" }}>Email</span>}
           rules={[
             {
               type: "email",
@@ -101,11 +113,22 @@ function SignUp(props) {
             },
           ]}
         >
-          <Input placeholder="Email" />
+          <Input
+            placeholder="TYPE IN YOUR EMAIL"
+            style={{
+              width: "300px", // 固定宽度为400px
+              border: "1px solid #D3D3D3", // 边框颜色
+              borderRadius: "6px", // 圆角
+              padding: "10px", // 内边距
+              height: "40px", // 输入框高度
+            }}
+            onFocus={(e) => (e.target.placeholder = "")}
+            onBlur={(e) => (e.target.placeholder = "TYPE IN YOUR EMAIL")}
+          />
         </Form.Item>
         <Form.Item
           name="password"
-          label="Password"
+          label={<span style={{ fontWeight: "bold" }}>Password</span>}
           rules={[
             {
               required: true,
@@ -114,12 +137,24 @@ function SignUp(props) {
           ]}
           hasFeedback
         >
-          <Input.Password />
+          <Input
+            type="password"
+            placeholder="SET YOUR PASSWORD"
+            style={{
+              width: "300px", // 固定宽度为400px
+              border: "1px solid #D3D3D3", // 边框颜色
+              borderRadius: "6px", // 圆角
+              padding: "10px", // 内边距
+              height: "40px", // 输入框高度
+            }}
+            onFocus={(e) => (e.target.placeholder = "")}
+            onBlur={(e) => (e.target.placeholder = "SET YOUR PASSWORD")}
+          />
         </Form.Item>
 
         <Form.Item
           name="confirm"
-          label="Confirm Password"
+          label={<span style={{ fontWeight: "bold" }}>Re-enter Passward</span>}
           dependencies={["password"]}
           hasFeedback
           rules={[
@@ -139,31 +174,86 @@ function SignUp(props) {
             }),
           ]}
         >
-          <Input.Password />
+          <Input
+            type="password"
+            placeholder="RETYPE YOUR PASSWORD"
+            style={{
+              width: "300px",
+              border: "1px solid #D3D3D3", // 边框颜色
+              borderRadius: "6px", // 圆角
+              padding: "10px", // 内边距
+              height: "40px", // 输入框高度
+              textAlign: "center", // 居中对齐
+            }}
+            onFocus={(e) => (e.target.placeholder = "")}
+            onBlur={(e) => (e.target.placeholder = "RETYPE YOUR PASSWORD")}
+          />
+        </Form.Item>
+        <Form.Item
+          label={
+            <span style={{ fontWeight: "bold" }}>Upload a profile photo</span>
+          }
+        >
+          <Upload
+            name="avatar"
+            listType="picture"
+            maxCount={1}
+            beforeUpload={(file) => {
+              const isLt5M = file.size / 1024 / 1024 < 5;
+              if (!isLt5M) {
+                message.error("Photo must be smaller than 5MB!");
+              }
+              return isLt5M;
+            }}
+          >
+            <Button
+              icon={<UploadOutlined />}
+              style={{
+                border: "1px solid #D3D3D3",
+                borderRadius: "6px",
+              }}
+            >
+              Select
+            </Button>
+          </Upload>
+          <span
+            style={{
+              marginTop: "10px",
+              display: "block",
+              fontStyle: "italic",
+              color: "#888",
+            }}
+          >
+            (Photo should be &lt; 5MB)
+          </span>
         </Form.Item>
 
-        <Form.Item
-          {...tailFormItemLayout}
-          
-        >
+        <Form.Item {...tailFormItemLayout}>
           <Link
             to="/cityguide/signin/"
             style={{
-              color: "black",
+              display: "inline-block",
+              width: "40%",
+              color: "white",
               padding: "6px",
-              margin: "40px",
-              backgroundColor: "#D3D3D3",
-              
+              backgroundColor: "#284642",
+              borderRadius: "4px",
+              border: "1px solid #1890ff",
             }}
           >
             Go to Sign In
           </Link>
-
           <Button
             type="primary"
             htmlType="submit"
             className="register-btn"
-            style={{ width: "45%", backgroundColor: "#284642" }}
+            style={{
+              width: "40%",
+              height: "36px",
+              marginLeft: "20px",
+              backgroundColor: "#284642",
+              borderRadius: "4px",
+            }}
           >
             Sign Up
           </Button>

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import Landing from "./Landing";
@@ -12,13 +13,10 @@ import SignIn from "./SignIn";
 import SignUp from "./SignUp";
 import MyGallery from "./MyGallery";
 import UserInfo from "./UserInfo";
-
-import { BASE_URL } from "../constants";
 import { TOKEN_KEY } from "../constants";
 
 function Main() {
   const [isSignedIn, setIsSignedIn] = useState(true);
-
   const handleSignedIn = (token) => {
     if (token) {
       localStorage.setItem(TOKEN_KEY, token);
@@ -56,12 +54,12 @@ function Main() {
     // ) : (
     //   <SignIn handleSignedIn={handleSignedIn} />
     // );
-    return <SignIn handleSignedIn={handleSignedIn}/>;
+    return <SignIn handleSignedIn={handleSignedIn} />;
   };
 
   const showSignUp = () => {
     // return isSignedIn ? <Navigate to="/cityguide/search" /> : <SignUp />;
-    return <SignUp handleSignedIn={handleSignedIn}/>;
+    return <SignUp handleSignedIn={handleSignedIn} />;
   };
   const showMyGallery = () => {
     return isSignedIn ? <MyGallery /> : <Navigate to="/cityguide/signin" />;

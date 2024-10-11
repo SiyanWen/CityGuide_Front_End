@@ -1,19 +1,85 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { DownCircleFilled } from "@ant-design/icons";
 import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDownTwoTone";
+import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 import { useNavigate } from "react-router-dom";
 import "../styles/Landing.css";
 import { TOKEN_KEY } from "../constants";
 import { UserOutlined } from "@ant-design/icons";
 import Select from "react-select";
 
+import {
+  Typography,
+  Button,
+  TextField,
+  Box,
+  Grid,
+  Card,
+  CardMedia,
+  CardContent,
+} from "@mui/material";
+
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+
 // import SelectState from "./SelectState"
 
 function Landing() {
   const [showChild, setShowChild] = React.useState(true);
   const [showProfile, setShowProfile] = React.useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = React.useState(null);
+  const [selectedDate, setSelectedDate] = React.useState(null);
+
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      height: 40,
+      borderRadius: 5,
+      paddingLeft: 10,
+      fontSize: "16px",
+    }),
+    menu: (provided) => ({
+      ...provided,
+      fontSize: "16px",
+    }),
+    placeholder: (provided) => ({
+      ...provided,
+      fontSize: "16px",
+    }),
+  };
+
+  ///////////////////////////////////////////////////////
+  // drag arrow event
+  const [dragging, setDragging] = useState(false);
+  const [position, setPosition] = useState({ top: 0 }); // 控制箭头位置
+  const startY = useRef(null);
+
+  const handleMouseDown = (e) => {
+    setDragging(true);
+    startY.current = e.clientY; // 记录鼠标开始的Y坐标
+  };
+
+  const handleMouseMove = (e) => {
+    if (!dragging) return;
+
+    const dragDistance = startY.current - e.clientY;
+    if (dragDistance < 0) {
+      // 确保只处理向上拖动的情况
+      setPosition({ top: dragDistance }); // 更新箭头的位置
+    }
+  };
+
+  const handleMouseUp = () => {
+    setDragging(false);
+    if (position.top < -50) {
+      // 如果拖动超过50px，触发 onClick 行为
+      setShowChild(!showChild);
+    }
+    setPosition({ top: 0 }); // 重置位置
+  };
+
+  ////////////////////////////////////////////////////////
 
   const navigate = useNavigate();
   function handleChange(selectedOption) {
@@ -110,15 +176,25 @@ function Landing() {
               <br />
               <br />
               <br />
-              <ArrowCircleDownIcon
+              <ArrowCircleUpIcon
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
                 onClick={() => {
                   setShowChild(!showChild);
                 }}
-                style={{ color: "white", fontSize: "8rem" }}
+                style={{
+                  position: "relative",
+                  top: `${position.top}px`, // 动态控制箭头的位置
+                  cursor: "pointer", // 鼠标悬停显示手型
+                  color: "white",
+                  fontSize: "8rem",
+                  transition: "top 0.3s ease", // 平滑的拖动效果
+                  animation: "moveUp 2s infinite", // 加入动画效果
+                }}
               />
             </div>
           </div>
-
           <div
             style={{
               margin: "auto",
@@ -127,8 +203,8 @@ function Landing() {
               backgroundImage: "url('../giphy.gif')",
 
               /* Full height */
+              width: "100vw",
               height: "100vh",
-              width: "100%",
               top: 0,
               /* Center and scale the image nicely */
               backgroundPosition: "center",
@@ -141,6 +217,58 @@ function Landing() {
       )}
       {!showChild && (
         <div>
+          {/* <Box
+            sx={{
+              backgroundColor: "#1976d2",
+              padding: "60px 20px",
+              textAlign: "center",
+            }}
+          >
+            <Box
+              sx={{
+                backgroundColor: "white",
+                padding: "20px",
+                borderRadius: "8px",
+                maxWidth: "900px",
+                margin: "0 auto",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 2,
+              }}
+            >
+              <Select
+                className="my_select"
+                value={selectedOption}
+                options={options}
+                onChange={handleChange}
+                placeholder="Where are you going?"
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    width: 300,
+                    fontSize: "16px",
+                    padding: "8px",
+                  }),
+                }}
+              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Select your dates"
+                  value={selectedDate}
+                  onChange={(newValue) => setSelectedDate(newValue)}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ height: "56px" }}
+              >
+                Search
+              </Button>
+            </Box>
+          </Box> */}
           <div
             style={{
               margin: "350px 0px 100px",
@@ -151,14 +279,58 @@ function Landing() {
           >
             <h1 class="green" style={{ color: "white", fontSize: "40px" }}>
               My City:{" "}
-            </h1>{" "}
+            </h1>
             <Select
               className="my_select"
               value={selectedOption}
               options={options}
+              // onChange={(option) => setSelectedOption(option)}
+              placeholder="Select..."
               onChange={handleChange}
             />
             {selectedOption && <p>Selected: {selectedOption.label}</p>}
+            {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Select a date"
+                value={selectedDate}
+                onChange={(newValue) => setSelectedDate(newValue)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    style={{ backgroundColor: "white" }}
+                  />
+                )}
+              />
+            </LocalizationProvider>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ height: "56px" }}
+              onClick={handleChange}
+            >
+              Search
+            </Button> */}
+            {/* <Select
+              className="my_select"
+              value={selectedOption}
+              options={options}
+            />
+            {selectedOption && <p>Selected: {selectedOption.label}</p>}
+            <LocalizationProvider
+              className="my_select"
+              dateAdapter={AdapterDayjs}
+            >
+              <DatePicker
+                label="Select a date"
+                value={selectedDate}
+                onChange={(newValue) => {
+                  setSelectedDate(newValue);
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider> */}
+
             <br />
             <br />
             <br />
@@ -166,15 +338,75 @@ function Landing() {
             <br />
             <br />
           </div>
-          <UserOutlined
+          {/* 静态图片展示 */}
+          <Box sx={{ padding: "40px 0" }}>
+            <Typography variant="h5" align="center" gutterBottom>
+              Nearby destinations
+            </Typography>
+
+            <Grid container spacing={4} justifyContent="center" sx={{ ml: 2 }}>
+              {[
+                {
+                  city: "New York",
+                  img: "/NY.jpg",
+                  activities: "1740 things to do",
+                },
+                {
+                  city: "Las Vegas",
+                  img: "/NY.jpg",
+                  activities: "873 things to do",
+                },
+                {
+                  city: "Key West",
+                  img: "/NY.jpg",
+                  activities: "251 things to do",
+                },
+                {
+                  city: "San Diego",
+                  img: "/NY.jpg",
+                  activities: "348 things to do",
+                },
+                {
+                  city: "Miami",
+                  img: "/NY.jpg",
+                  activities: "726 things to do",
+                },
+                {
+                  city: "New Orleans",
+                  img: "/NY.jpg",
+                  activities: "521 things to do",
+                },
+              ].map((place, index) => (
+                <Grid item key={index} xs={12} sm={6} md={4}>
+                  <Card>
+                    <CardMedia
+                      component="img"
+                      height="140"
+                      image={place.img} // 替换为图片的路径
+                      alt={place.city}
+                    />
+                    <CardContent>
+                      <Typography variant="h6" component="div">
+                        {place.city}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {place.activities}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+          {/* <UserOutlined
             onClick={() => {
               setShowProfile(!showProfile);
             }}
             style={{ color: "white", fontSize: "40px", margin: "20px" }}
-          />
+          /> 
           <br />
           <br />
-          {showProfile && (
+          {/* {showProfile && (
             <tb>
               <tr>
                 <Link to="/cityguide/signin/" style={{ color: "black" }}>
@@ -200,7 +432,7 @@ function Landing() {
                 Log out
               </tr>
             </tb>
-          )}
+          )} */}
         </div>
       )}
       <div
