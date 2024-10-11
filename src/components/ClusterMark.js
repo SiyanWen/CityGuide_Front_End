@@ -3,7 +3,7 @@ import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
 import { AdvancedMarker, Pin } from "@vis.gl/react-google-maps";
 
-const MarkerCluster = ({ mySelections }) => {
+const MarkerCluster = ({ spotsList }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handlePopoverOpen = (event) => {
@@ -18,11 +18,11 @@ const MarkerCluster = ({ mySelections }) => {
 
   return (
     <>
-      {mySelections.map((mySelection) => {
+      {spotsList.map((spot) => {
         return (
           <div>
             <AdvancedMarker
-              position={mySelection.geometry.location}
+              position={spot.geometry.location}
               scale={0.05}
             >
               <Pin
@@ -48,7 +48,7 @@ const MarkerCluster = ({ mySelections }) => {
               onClose={handlePopoverClose}
               disableRestoreFocus
             >
-              <Typography sx={{ p: 1 }}>{mySelection.name}</Typography>
+              <Typography sx={{ p: 1 }}>{spot.name}</Typography>
             </Popover>
           </div>
         );

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { PlaceOverview } from "@googlemaps/extended-component-library/react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -14,24 +14,52 @@ import myTheme from "../MyMuiTheme";
 import CollectiveButton from "./CollectiveButton.js";
 import MySelection from "./MySelection.js";
 
-const SideWindow = ({ placeId, open, onClose }) => {
-
+const SideWindow = ({ place, open, onClose }) => {
   // const{totalSelection}=useContext(TotalSelectionContext);
+  const [pid, setPid] = useState(null);
+  const [mySelection, setMySelection] = useState([]);
+  const [openList, setOpenList] = useState(false);
 
-  const [mySelection, setMySection] = useState(false);
-  const handleClick=()=>{setMySection(!mySelection)};
+  useEffect(() => {
+    if (place && place.place_id) {
+      setPid(place.place_id);
+      console.log(place.place_id);
+    }
+
+    if (!place) {
+      setOpenList(false);
+    }
+  }, [place]);
+
+  const handleAdd = () => {
+    const spotAttribute=Object.entries(place);
+    setMySelection([...mySelection,...spotAttribute]);
+    console.log(spotAttribute);
+    console.log(JSON.stringify(mySelection));
+  };
+
+  const handleClick = () => {
+    setOpenList(true);
+    console.log('true')
+  };
+
+  const deleteSpot = (outerIndex) => {
+    const updatedMySelection = mySelection.filter((_, i) => i !== outerIndex);
+    setMySelection(updatedMySelection);
+  };
 
   return (
-    <Drawer anchor="right" open={open} sx={{width:550}}>
+    <Drawer anchor="right" open={open} sx={{ width: 550 }}>
       <div className="main-container">
         <ThemeProvider theme={myTheme}>
           <div className="place-overview">
             <PlaceOverview
               size="x-large"
-              place={placeId}
+              place={pid}
               googleLogoAlreadyDisplayed
             ></PlaceOverview>
           </div>
+
           <div className="top-button">
             <div className="my-selection">
               <Button
@@ -42,8 +70,9 @@ const SideWindow = ({ placeId, open, onClose }) => {
                 My Selection
               </Button>
             </div>
+
             <div className="collective-button">
-                <CollectiveButton/>
+              <CollectiveButton />
             </div>
           </div>
 
@@ -57,18 +86,25 @@ const SideWindow = ({ placeId, open, onClose }) => {
               >
                 Back to Map
               </Button>
+
               <Button
                 variant="contained"
                 color="secondary"
                 startIcon={<AddIcon fontSize="small" />}
-                onClick={handleClick}
+                onClick={()=>{handleAdd();handleClick();}}
               >
-                Add to Plan
+                Add to MySelection
               </Button>
             </Stack>
           </div>
         </ThemeProvider>
-        <MySelection open={mySelection} onClose={onClose}/>
+
+        <MySelection
+          mySpots={mySelection}
+          onDeleted={deleteSpot}
+          open={openList}
+          onClose={onClose}
+        />
       </div>
     </Drawer>
   );

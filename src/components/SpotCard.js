@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -13,6 +14,9 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 import { ThemeProvider } from "@mui/material/styles";
 import myTheme from "../MyMuiTheme";
+import "../styles/SpotCard.css";
+
+import CollectiveButton from "./CollectiveButton";
 
 const labels = {
   0.5: "Useless",
@@ -27,52 +31,72 @@ const labels = {
   5: "Excellent+",
 };
 
-const SpotCard = (mySelections) => {
+//spotsList, onDeleted
+const SpotCard = () => {
   return (
     <>
-      {mySelections.map((mySelection) => {
-        return (
-          <ThemeProvider theme={myTheme}>
-            <Card sx={{ display: "flex", maxWidth: 450 }}>
+      {/* {spotsList.map((innerArray, outerIndex) => {
+        return ( */}
+      <ThemeProvider theme={myTheme}>
+        <div className="card-container">
+          <Card sx={{ display: "flex", maxWidth: 450 }}>
+            {/* {innerArray.map((key,value) => (
+                <div> */}
+            <div className="photo-cotainer">
               <CardMedia
                 component="img"
                 sx={{ width: 151 }}
-                image={mySelection.photo}
-                alt={mySelection.name}
+                image="https://maps.google.com/maps/contrib/117621118677247774346"
+                alt="Space Needle"
               />
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <CardContent sx={{ flex: "1 0 auto" }}>
-                  <Typography component="div" variant="h5">
-                    {mySelection.name}
-                  </Typography>
-                  <Typography
-                    variant="subtitle1"
-                    component="div"
-                    sx={{ color: "text.secondary" }}
-                  >
-                    Rating
-                  </Typography>
-                  <Box
-                    sx={{ width: 150, display: "flex", alignItems: "center" }}
-                  >
-                    <Rating
-                      name="text-feedback"
-                      value={value}
-                      readOnly
-                      precision={0.5}
-                      emptyIcon={
-                        <StarIcon
-                          style={{ opacity: 0.55 }}
-                          fontSize="inherit"
-                        />
-                      }
-                    />
-                    <Box sx={{ ml: 2 }}>{labels[mySelection.rating]}</Box>
-                  </Box>
-                </CardContent>
+            </div>
 
-                <CardActions>
-                  <Stack direction="row" spacing={8} padding={3}>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <div className="content-cotainer">
+                <CardContent sx={{ flex: "1 0 auto" }}>
+                  <div className="main-content">
+                    <Typography component="div" variant="h5">
+                      Space Needle
+                    </Typography>
+                  </div>
+                  <div className="sub-content">
+                    <Typography
+                      variant="subtitle1"
+                      component="div"
+                      sx={{ color: "text.secondary" }}
+                    >
+                      Rating
+                    </Typography>
+                  </div>
+                  <div className="stars">
+                    <Box
+                      sx={{
+                        width: 150,
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Rating
+                        name="text-feedback"
+                        value={4.6}
+                        readOnly
+                        precision={0.5}
+                        emptyIcon={
+                          <StarIcon
+                            style={{ opacity: 0.55 }}
+                            fontSize="inherit"
+                          />
+                        }
+                      />
+                      <Box sx={{ ml: 2 }}>{labels[4.6]}</Box>
+                    </Box>
+                  </div>
+                </CardContent>
+              </div>
+
+              <CardActions>
+                <div className="button-cotainer-top">
+                  <Stack direction="row" spacing={1} padding={1}>
                     <CollectiveButton />
                     <Button
                       variant="contained"
@@ -81,19 +105,24 @@ const SpotCard = (mySelections) => {
                       onClick={() => {}}
                     ></Button>
                   </Stack>
-
+                </div>
+                <div className="button-cotainer-bottom">
                   <Button
                     variant="contained"
                     color="secondary"
                     startIcon={<RemoveIcon fontSize="small" />}
                     onClick={() => {}}
                   ></Button>
-                </CardActions>
-              </Box>
-            </Card>
-          </ThemeProvider>
-        );
-      })}
+                </div>
+              </CardActions>
+            </Box>
+            {/* </div>
+              ))} */}
+          </Card>
+        </div>
+      </ThemeProvider>
+      {/* //   );
+      // })} */}
     </>
   );
 };
