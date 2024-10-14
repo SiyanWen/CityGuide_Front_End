@@ -1,14 +1,13 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Input, Button, message, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import axios from "axios";
 import { Link } from "react-router-dom";
 
 import { BASE_URL } from "../constants";
 import ResponsiveAppBar from "./ResponsiveAppBar";
+import { signup } from "../utils";
 
-// (mobile) responsiveness design
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -33,48 +32,68 @@ const tailFormItemLayout = {
   },
 };
 
-function SignUp(props) {
-  const [form] = Form.useForm();
+const SignUp = () => {
+  const [displayModal, setDisplayModal] = useState(false);
   const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const onFinish = (values) => {
-    console.log("Received values of form: ", values);
-    const { username, password } = values;
-    const opt = {
-      method: "POST",
-      url: `${BASE_URL}/signup`,
-      data: {
-        username: username,
-        password: password,
-      },
-      headers: { "content-type": "application/json" },
-    };
+  // check the status of login
+  useEffect(() => {
+    const storedStatus = localStorage.getItem("isLoggedIn") === "true";
+    if (storedStatus) {
+      navigate("/cityguide/userinfo");
+    }
+    const storedUsername = localStorage.getItem("username");
+    setIsLoggedIn(storedStatus);
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
 
-    axios(opt)
-      .then((response) => {
-        console.log(response);
-        // case1: registered success
-        if (response.status === 200) {
-          message.success("Registration succeeded!");
-          navigate("/login");
-        }
+  const handleCancel = () => {
+    setDisplayModal(false);
+  };
+
+  const signupOnClick = () => {
+    setDisplayModal(true);
+  };
+
+  const onFinish = (data) => {
+    console.log("Data submitted:", data); // Debugging line
+
+    signup(data)
+      .then(() => {
+        console.log("Signup successful"); // Debugging line
+        setDisplayModal(false);
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("isLoggedIn", "true");
+        setIsLoggedIn(true);
+        setUsername(data.username);
+        message.success("Successfully signed up");
+        navigate("/cityguide/search");
       })
-      .catch((error) => {
-        console.log("register failed: ", error.message);
-        message.error("Registration failed!");
-        // throw new Error('Signup Failed!')
+      .catch((err) => {
+        console.error("Signup failed:", err.message); // Debugging line
+        message.error(err.message);
       });
   };
 
   return (
     <>
-      <ResponsiveAppBar secondElem={"Sign Up"} />
+      <ResponsiveAppBar
+        secondElem={"Sign Up"}
+        isLoggedIn={isLoggedIn}
+        username={username}
+        setIsLoggedIn={setIsLoggedIn}
+        setUsername={setUsername}
+      />
       <Form
-        {...formItemLayout}
-        form={form}
         name="register"
         onFinish={onFinish}
         className="register"
+        preserve={false}
+        {...formItemLayout}
       >
         <Form.Item
           name="username"
@@ -89,16 +108,17 @@ function SignUp(props) {
           <Input
             placeholder="TYPE IN YOUR NAME"
             style={{
-              width: "300px", // 固定宽度为400px
-              border: "1px solid #D3D3D3", // 边框颜色
-              borderRadius: "6px", // 圆角
-              padding: "10px", // 内边距
-              height: "40px", // 输入框高度
+              width: "300px",
+              border: "1px solid #D3D3D3",
+              borderRadius: "6px",
+              padding: "10px",
+              height: "40px",
             }}
             onFocus={(e) => (e.target.placeholder = "")}
-            onBlur={(e) => (e.target.placeholder = "TYPE IN YOUR EMAIL")}
+            onBlur={(e) => (e.target.placeholder = "TYPE IN YOUR NAME")}
           />
         </Form.Item>
+
         <Form.Item
           name="email"
           label={<span style={{ fontWeight: "bold" }}>Email</span>}
@@ -116,16 +136,17 @@ function SignUp(props) {
           <Input
             placeholder="TYPE IN YOUR EMAIL"
             style={{
-              width: "300px", // 固定宽度为400px
-              border: "1px solid #D3D3D3", // 边框颜色
-              borderRadius: "6px", // 圆角
-              padding: "10px", // 内边距
-              height: "40px", // 输入框高度
+              width: "300px",
+              border: "1px solid #D3D3D3",
+              borderRadius: "6px",
+              padding: "10px",
+              height: "40px",
             }}
             onFocus={(e) => (e.target.placeholder = "")}
             onBlur={(e) => (e.target.placeholder = "TYPE IN YOUR EMAIL")}
           />
         </Form.Item>
+
         <Form.Item
           name="password"
           label={<span style={{ fontWeight: "bold" }}>Password</span>}
@@ -137,15 +158,14 @@ function SignUp(props) {
           ]}
           hasFeedback
         >
-          <Input
-            type="password"
+          <Input.Password
             placeholder="SET YOUR PASSWORD"
             style={{
-              width: "300px", // 固定宽度为400px
-              border: "1px solid #D3D3D3", // 边框颜色
-              borderRadius: "6px", // 圆角
-              padding: "10px", // 内边距
-              height: "40px", // 输入框高度
+              width: "300px",
+              border: "1px solid #D3D3D3",
+              borderRadius: "6px",
+              padding: "10px",
+              height: "40px",
             }}
             onFocus={(e) => (e.target.placeholder = "")}
             onBlur={(e) => (e.target.placeholder = "SET YOUR PASSWORD")}
@@ -154,7 +174,7 @@ function SignUp(props) {
 
         <Form.Item
           name="confirm"
-          label={<span style={{ fontWeight: "bold" }}>Re-enter Passward</span>}
+          label={<span style={{ fontWeight: "bold" }}>Re-enter Password</span>}
           dependencies={["password"]}
           hasFeedback
           rules={[
@@ -174,21 +194,20 @@ function SignUp(props) {
             }),
           ]}
         >
-          <Input
-            type="password"
+          <Input.Password
             placeholder="RETYPE YOUR PASSWORD"
             style={{
               width: "300px",
-              border: "1px solid #D3D3D3", // 边框颜色
-              borderRadius: "6px", // 圆角
-              padding: "10px", // 内边距
-              height: "40px", // 输入框高度
-              textAlign: "center", // 居中对齐
+              border: "1px solid #D3D3D3",
+              borderRadius: "6px",
+              padding: "10px",
+              height: "40px",
             }}
             onFocus={(e) => (e.target.placeholder = "")}
             onBlur={(e) => (e.target.placeholder = "RETYPE YOUR PASSWORD")}
           />
         </Form.Item>
+
         <Form.Item
           label={
             <span style={{ fontWeight: "bold" }}>Upload a profile photo</span>
@@ -261,6 +280,6 @@ function SignUp(props) {
       </Form>
     </>
   );
-}
+};
 
 export default SignUp;

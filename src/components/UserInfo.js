@@ -5,6 +5,8 @@ import { styled } from "@mui/system";
 import { BASE_URL } from "../constants";
 import { useNavigate } from "react-router-dom";
 import { TOKEN_KEY } from "../constants";
+import { getUserInfo, logout } from "../utils";
+import { message } from "antd";
 import {
   Box,
   Button,
@@ -14,6 +16,7 @@ import {
   Typography,
   IconButton,
   DialogContentText,
+  Container,
 } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -61,10 +64,11 @@ const getInitials = (name) => {
 };
 
 function UserInfo() {
-  const [username, setUsername] = useState("Hao Yan");
-  const [email, setEmail] = useState("email@example.com");
-  const [password, setPassword] = useState("MyPassword");
-  const [city, setCity] = useState("OurCity");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [city, setCity] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [avatar, setAvatar] = useState(null); // 存储头像 URL
   const [selectedFile, setSelectedFile] = useState(null); // 存储上传的文件
@@ -73,31 +77,24 @@ function UserInfo() {
   const [openAvatarDialog, setOpenAvatarDialog] = useState(false); // 控制上传图片的弹框状态
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false); // 控制删除确认弹框的状态
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // 用来存储登录状态
-
-  // 1. 首次加载时获取用户的头像
+  // 检查登录状态
   useEffect(() => {
-    // .get(`${BASE_URL}/user/avatar`) // 假设这个端点返回用户头像的 URL
-    // 使用 Promise.all 同时发起多个请求
-    Promise.all([
-      axios.get(`${BASE_URL}/auth/check-login`), // 检查登录状态
-      axios.get(`${BASE_URL}/user/avatar`), // 获取头像
-    ])
-      .then(([loginResponse, avatarResponse]) => {
-        // 处理登录状态
-        if (loginResponse.data.isLoggedIn) {
-          // if (isLoggedIn) {
-          setIsLoggedIn(true);
-          setAvatar(avatarResponse.data.avatarUrl); // 设置头像 URL
-        } else {
-          navigate("/"); // 如果未登录，重定向到首页
-        }
+    const storedStatus = localStorage.getItem("isLoggedIn") === "true";
+    setIsLoggedIn(storedStatus);
+  }, []);
+
+  useEffect(() => {
+    getUserInfo()
+      .then((data) => {
+        setUsername(data.username);
+        setEmail(data.email);
+        setPassword(data.password);
+        setCity(data.city);
       })
-      .catch((error) => {
-        console.error("Error loading avatar:", error);
+      .catch((err) => {
+        message.error(err.message);
       });
-  }, [username, avatar]); // 依赖项数组，表示当 username 或 avatar 发生变化时执行
-  // }, []); // 空数组意味着仅在组件首次加载时运行
+  }, []);
 
   // 2. 提交新头像（表单提交）
   const handleAvatarSubmit = (event) => {
@@ -185,371 +182,393 @@ function UserInfo() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem(TOKEN_KEY);
-    setIsLoggedIn(false);
-    console.log("Logged out");
+    logout()
+      .then(() => {
+        message.success("Logout Successful");
+        localStorage.removeItem("username");
+        localStorage.removeItem("isLoggedIn");
+        setIsLoggedIn(false);
+        setUsername(null); // Clear the username
+        navigate("/"); // Redirect to home page
+      })
+      .catch((err) => {
+        message.error("Logout failed: " + err.message);
+      });
   };
 
   return (
     <>
       <ResponsiveAppBar
         position="fixed"
-        // style={{ top: 0, zIndex: 2, width: "100%", background: "transparent" }}
-        secondElem={"My Account"}
+        isLoggedIn={isLoggedIn}
+        username={username}
+        secondElem="My Account"
+        setIsLoggedIn={setIsLoggedIn}
+        setUsername={setUsername}
       />
-      <Grid
-        container
+      <Container
+        maxWidth="lg" // 设置为大屏布局，并且最大宽度为1200px
         sx={{
-          marginTop: "50px",
-          display: "flex",
-          justifyContent: "flex-start",
+          mt: 10, // 顶部留出空间给AppBar
+          width: "100%",
+          maxWidth: "1200px", // 设置最大宽度为1200px
+          margin: "0 auto", // 水平居中
         }}
       >
-        {/* Sidebar */}
+        <Grid
+          container
+          sx={{
+            marginTop: "50px",
+            display: "flex",
+            justifyContent: "flex-start",
+          }}
+        >
+          {/* Sidebar */}
 
-        <Sidebar>
-          <Box sx={{ width: "100%", marginTop: "20px" }}>
-            <Typography
-              variant="h6" // 使用更小的字体大小
-              sx={{
-                marginBottom: "10px", // 与下方内容的距离
-                width: "100%",
-                textAlign: "center", // 文字居中
-                borderBottom: "1px solid grey", // 添加底部边框作为线条，颜色和宽度可以自定义
-                paddingBottom: "10px", // 让底部边框和文字有一点距离
-              }}
-            >
-              My Profile
-            </Typography>
-            {/* 显示头像 */}
-            <IconButton
-              onClick={handleAvatarClick}
-              sx={{
-                marginTop: "100px",
-                "&:hover": {
-                  backgroundColor: "transparent", // 移除 IconButton hover 时的背景色
-                },
-              }}
-            >
-              <Avatar
-                src={avatar} // If avatar URL exists, it will be displayed
-                alt="User Avatar"
-                style={{ backgroundColor: "#8B0000" }}
+          <Sidebar>
+            <Box sx={{ width: "100%", marginTop: "20px" }}>
+              <Typography
+                variant="h6" // 使用更小的字体大小
                 sx={{
-                  // backgroundColor: avatar ? "transparent" : "#8B0000", // 如果有头像，背景透明；否则暗红色
-                  // backgroundColor: "#8B0000",
-                  color: "white", // 没有头像时缩写的颜色
-                  width: 56, // 可以根据需要调整头像的大小
-                  height: 56,
+                  marginBottom: "10px", // 与下方内容的距离
+                  width: "100%",
+                  textAlign: "center", // 文字居中
+                  borderBottom: "1px solid grey", // 添加底部边框作为线条，颜色和宽度可以自定义
+                  paddingBottom: "10px", // 让底部边框和文字有一点距离
                 }}
-                {...(!avatar && stringAvatar(username))} // If no avatar, it shows the initials with background color
-              />
-            </IconButton>
-            {/* 弹出框 开始 */}
-            <Dialog open={openAvatarDialog} onClose={handleCloseAvatarDialog}>
-              <DialogContent>
-                {/* 预览头像 */}
-                <Grid container spacing={2} alignItems="center">
-                  <Avatar
-                    src={avatar}
-                    alt="User Avatar"
-                    style={{
-                      margin: "20px",
-                      marginBottom: "30px",
-                      backgroundColor: "#8B0000",
-                    }}
-                    {...(!avatar && stringAvatar(username))} // If no avatar, it shows the initials with background color
-                  ></Avatar>
+              >
+                My Profile
+              </Typography>
+              {/* 显示头像 */}
+              <IconButton
+                onClick={handleAvatarClick}
+                sx={{
+                  marginTop: "100px",
+                  "&:hover": {
+                    backgroundColor: "transparent", // 移除 IconButton hover 时的背景色
+                  },
+                }}
+              >
+                <Avatar
+                  src={avatar} // If avatar URL exists, it will be displayed
+                  alt="User Avatar"
+                  style={{ backgroundColor: "#8B0000" }}
+                  sx={{
+                    // backgroundColor: avatar ? "transparent" : "#8B0000", // 如果有头像，背景透明；否则暗红色
+                    // backgroundColor: "#8B0000",
+                    color: "white", // 没有头像时缩写的颜色
+                    width: 56, // 可以根据需要调整头像的大小
+                    height: 56,
+                  }}
+                  {...(!avatar && stringAvatar(username))} // If no avatar, it shows the initials with background color
+                />
+              </IconButton>
+              {/* 弹出框 开始 */}
+              <Dialog open={openAvatarDialog} onClose={handleCloseAvatarDialog}>
+                <DialogContent>
+                  {/* 预览头像 */}
+                  <Grid container spacing={2} alignItems="center">
+                    <Avatar
+                      src={avatar}
+                      alt="User Avatar"
+                      style={{
+                        margin: "20px",
+                        marginBottom: "30px",
+                        backgroundColor: "#8B0000",
+                      }}
+                      {...(!avatar && stringAvatar(username))} // If no avatar, it shows the initials with background color
+                    ></Avatar>
 
-                  <DialogTitle
-                    sx={{
-                      fontSize: "1.5rem",
-                      fontWeight: "bold",
-                      color: "black",
-                    }}
-                  >
-                    Select an image to upload
-                  </DialogTitle>
-                </Grid>
-
-                <Grid item>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <Button
-                      onClick={handleDelete}
-                      color="error"
-                      style={{ marginRight: "10px" }} // 设置右边距
+                    <DialogTitle
+                      sx={{
+                        fontSize: "1.5rem",
+                        fontWeight: "bold",
+                        color: "black",
+                      }}
                     >
-                      DELETE
-                    </Button>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                      style={{ display: "block" }}
-                    />
-                  </div>
+                      Select an image to upload
+                    </DialogTitle>
+                  </Grid>
+
+                  <Grid item>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <Button
+                        onClick={handleDelete}
+                        color="error"
+                        style={{ marginRight: "10px" }} // 设置右边距
+                      >
+                        DELETE
+                      </Button>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        style={{ display: "block" }}
+                      />
+                    </div>
+                  </Grid>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleCloseAvatarDialog} color="primary">
+                    CANCEL
+                  </Button>
+                  <Button
+                    onClick={handleCloseAvatarDialog}
+                    color="primary"
+                    disabled={!selectedFile}
+                  >
+                    SAVE
+                  </Button>
+                </DialogActions>
+              </Dialog>
+              {/* 弹出框 结束 */}
+              <Typography variant="h6">{username}</Typography>
+              <Button
+                variant="contained"
+                sx={{
+                  mt: 20,
+                  backgroundColor: "#284642",
+                  width: "200px",
+                  textTransform: "none",
+                }}
+                onClick={() => handleNavigate("My Gallery")}
+              >
+                Go to My Gallery
+              </Button>
+              <Button
+                variant="contained"
+                sx={{
+                  mt: 4,
+                  backgroundColor: "#284642",
+                  width: "200px",
+                  textTransform: "none",
+                }}
+                onClick={() => handleNavigate("My Selection")}
+              >
+                Go to My Selection
+              </Button>
+            </Box>
+          </Sidebar>
+
+          {/* Main Content */}
+          <Box
+            sx={{
+              flexGrow: 1,
+              p: 3,
+              mt: 10,
+              ml: 10,
+            }}
+          >
+            <Box sx={{ mt: 3 }}>
+              <Grid container alignItems="center" spacing={2} sx={{ mb: 2 }}>
+                <Grid item xs={4}>
+                  <Typography
+                    variant="body1"
+                    sx={{ textAlign: "right", fontWeight: "bold", pr: 2 }}
+                  >
+                    Username:
+                  </Typography>
                 </Grid>
+                <Grid item xs={3}>
+                  <TextField
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    fullWidth
+                    sx={{
+                      height: "40px", // 调整 TextField 高度
+                      width: "250px",
+                      borderRadius: "6px",
+                      "& .MuiInputBase-root": {
+                        borderRadius: "6px", // 设置圆角
+                        height: "40px", // 设置输入框高度
+                      },
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "grey", // 初始边框颜色设置为浅灰色
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#40a9ff", // 鼠标悬停时的边框颜色
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#40a9ff", // 聚焦时的边框颜色
+                      },
+                    }}
+                  />
+                </Grid>
+              </Grid>
+
+              {/* Email */}
+              <Grid container alignItems="center" spacing={2} sx={{ mb: 2 }}>
+                <Grid item xs={4}>
+                  <Typography
+                    variant="body1"
+                    sx={{ textAlign: "right", fontWeight: "bold", pr: 2 }}
+                  >
+                    Email:
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    fullWidth
+                    sx={{
+                      height: "40px", // 调整 TextField 高度
+                      width: "250px",
+                      borderRadius: "6px",
+                      "& .MuiInputBase-root": {
+                        borderRadius: "6px", // 设置圆角
+                        height: "40px", // 设置输入框高度
+                      },
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "grey", // 初始边框颜色设置为浅灰色
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#40a9ff", // 鼠标悬停时的边框颜色
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#40a9ff", // 聚焦时的边框颜色
+                      },
+                    }}
+                  />
+                </Grid>
+              </Grid>
+
+              {/* Password */}
+              <Grid container alignItems="center" spacing={2} sx={{ mb: 2 }}>
+                <Grid item xs={4}>
+                  <Typography
+                    variant="body1"
+                    sx={{ textAlign: "right", fontWeight: "bold", pr: 2 }}
+                  >
+                    Password:
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    fullWidth
+                    sx={{
+                      height: "40px", // 调整 TextField 高度
+                      width: "250px",
+                      borderRadius: "6px",
+                      "& .MuiInputBase-root": {
+                        borderRadius: "6px", // 设置圆角
+                        height: "40px", // 设置输入框高度
+                      },
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "grey", // 初始边框颜色设置为浅灰色
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#40a9ff", // 鼠标悬停时的边框颜色
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#40a9ff", // 聚焦时的边框颜色
+                      },
+                    }}
+                  />
+                </Grid>
+              </Grid>
+
+              {/* Destination City */}
+              <Grid container alignItems="center" spacing={2} sx={{ mb: 2 }}>
+                <Grid item xs={4}>
+                  <Typography
+                    variant="body1"
+                    sx={{ textAlign: "right", fontWeight: "bold", pr: 2 }}
+                  >
+                    Destination City:
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    fullWidth
+                    sx={{
+                      height: "40px", // 调整 TextField 高度
+                      width: "250px",
+                      borderRadius: "6px",
+                      "& .MuiInputBase-root": {
+                        borderRadius: "6px", // 设置圆角
+                        height: "40px", // 设置输入框高度
+                      },
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "grey", // 初始边框颜色设置为浅灰色
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#40a9ff", // 鼠标悬停时的边框颜色
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#40a9ff", // 聚焦时的边框颜色
+                      },
+                    }}
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+            <Box
+              sx={{
+                display: "flex", // 使用 flex 布局
+                justifyContent: "flex-start", // 子元素左对齐
+                alignItems: "center", // 子元素垂直居中（可选）
+              }}
+            >
+              <Button
+                variant="contained"
+                sx={{
+                  mt: 4,
+                  ml: 20,
+                  backgroundColor: "#284642",
+                  width: "150px",
+                  textTransform: "none",
+                  marginRight: 6,
+                }}
+                onClick={() => handleNavigate("Log out")}
+              >
+                Log out
+              </Button>
+              <Button
+                variant="contained"
+                sx={{
+                  mt: 4,
+                  backgroundColor: "#284642",
+                  width: "180px",
+                  textTransform: "none",
+                  color: "error",
+                }}
+                onClick={handleDeleteClick} // 点击删除按钮时打开弹框
+              >
+                Delete Your Account
+              </Button>
+            </Box>
+
+            {/* 确认删除的弹框 */}
+            <Dialog
+              open={openDeleteDialog}
+              onClose={handleCloseDeleteDialog} // 点击关闭时关闭弹框
+            >
+              <DialogTitle>{"Confirm Deletion"}</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Are you sure you want to delete your account?
+                </DialogContentText>
               </DialogContent>
               <DialogActions>
-                <Button onClick={handleCloseAvatarDialog} color="primary">
-                  CANCEL
+                {/* 取消按钮 */}
+                <Button onClick={handleCloseDeleteDialog} color="primary">
+                  Cancel
                 </Button>
-                <Button
-                  onClick={handleCloseAvatarDialog}
-                  color="primary"
-                  disabled={!selectedFile}
-                >
-                  SAVE
+                {/* 确认删除按钮 */}
+                <Button onClick={handleConfirmDelete} color="error" autoFocus>
+                  Confirm
                 </Button>
               </DialogActions>
             </Dialog>
-            {/* 弹出框 结束 */}
-            <Typography variant="h6">{username}</Typography>
-            <Button
-              variant="contained"
-              sx={{
-                mt: 20,
-                backgroundColor: "#284642",
-                width: "200px",
-                textTransform: "none",
-              }}
-              onClick={() => handleNavigate("My Gallery")}
-            >
-              Go to My Gallery
-            </Button>
-            <Button
-              variant="contained"
-              sx={{
-                mt: 4,
-                backgroundColor: "#284642",
-                width: "200px",
-                textTransform: "none",
-              }}
-              onClick={() => handleNavigate("My Selection")}
-            >
-              Go to My Selection
-            </Button>
           </Box>
-        </Sidebar>
-
-        {/* Main Content */}
-        <Box
-          sx={{
-            flexGrow: 1,
-            p: 3,
-            mt: 10,
-            ml: 10,
-          }}
-        >
-          <Box sx={{ mt: 3 }}>
-            <Grid container alignItems="center" spacing={2} sx={{ mb: 2 }}>
-              <Grid item xs={4}>
-                <Typography
-                  variant="body1"
-                  sx={{ textAlign: "right", fontWeight: "bold", pr: 2 }}
-                >
-                  Username:
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <TextField
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  fullWidth
-                  sx={{
-                    height: "40px", // 调整 TextField 高度
-                    width: "250px",
-                    borderRadius: "6px",
-                    "& .MuiInputBase-root": {
-                      borderRadius: "6px", // 设置圆角
-                      height: "40px", // 设置输入框高度
-                    },
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "grey", // 初始边框颜色设置为浅灰色
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#40a9ff", // 鼠标悬停时的边框颜色
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#40a9ff", // 聚焦时的边框颜色
-                    },
-                  }}
-                />
-              </Grid>
-            </Grid>
-
-            {/* Email */}
-            <Grid container alignItems="center" spacing={2} sx={{ mb: 2 }}>
-              <Grid item xs={4}>
-                <Typography
-                  variant="body1"
-                  sx={{ textAlign: "right", fontWeight: "bold", pr: 2 }}
-                >
-                  Email:
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <TextField
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  fullWidth
-                  sx={{
-                    height: "40px", // 调整 TextField 高度
-                    width: "250px",
-                    borderRadius: "6px",
-                    "& .MuiInputBase-root": {
-                      borderRadius: "6px", // 设置圆角
-                      height: "40px", // 设置输入框高度
-                    },
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "grey", // 初始边框颜色设置为浅灰色
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#40a9ff", // 鼠标悬停时的边框颜色
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#40a9ff", // 聚焦时的边框颜色
-                    },
-                  }}
-                />
-              </Grid>
-            </Grid>
-
-            {/* Password */}
-            <Grid container alignItems="center" spacing={2} sx={{ mb: 2 }}>
-              <Grid item xs={4}>
-                <Typography
-                  variant="body1"
-                  sx={{ textAlign: "right", fontWeight: "bold", pr: 2 }}
-                >
-                  Password:
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <TextField
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  fullWidth
-                  sx={{
-                    height: "40px", // 调整 TextField 高度
-                    width: "250px",
-                    borderRadius: "6px",
-                    "& .MuiInputBase-root": {
-                      borderRadius: "6px", // 设置圆角
-                      height: "40px", // 设置输入框高度
-                    },
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "grey", // 初始边框颜色设置为浅灰色
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#40a9ff", // 鼠标悬停时的边框颜色
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#40a9ff", // 聚焦时的边框颜色
-                    },
-                  }}
-                />
-              </Grid>
-            </Grid>
-
-            {/* Destination City */}
-            <Grid container alignItems="center" spacing={2} sx={{ mb: 2 }}>
-              <Grid item xs={4}>
-                <Typography
-                  variant="body1"
-                  sx={{ textAlign: "right", fontWeight: "bold", pr: 2 }}
-                >
-                  Destination City:
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <TextField
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  fullWidth
-                  sx={{
-                    height: "40px", // 调整 TextField 高度
-                    width: "250px",
-                    borderRadius: "6px",
-                    "& .MuiInputBase-root": {
-                      borderRadius: "6px", // 设置圆角
-                      height: "40px", // 设置输入框高度
-                    },
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "grey", // 初始边框颜色设置为浅灰色
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#40a9ff", // 鼠标悬停时的边框颜色
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#40a9ff", // 聚焦时的边框颜色
-                    },
-                  }}
-                />
-              </Grid>
-            </Grid>
-          </Box>
-          <Box
-            sx={{
-              display: "flex", // 使用 flex 布局
-              justifyContent: "flex-start", // 子元素左对齐
-              alignItems: "center", // 子元素垂直居中（可选）
-            }}
-          >
-            <Button
-              variant="contained"
-              sx={{
-                mt: 4,
-                ml: 20,
-                backgroundColor: "#284642",
-                width: "150px",
-                textTransform: "none",
-                marginRight: 6,
-              }}
-              onClick={() => handleNavigate("Log out")}
-            >
-              Log out
-            </Button>
-            <Button
-              variant="contained"
-              sx={{
-                mt: 4,
-                backgroundColor: "#284642",
-                width: "180px",
-                textTransform: "none",
-                color: "error",
-              }}
-              onClick={handleDeleteClick} // 点击删除按钮时打开弹框
-            >
-              Delete Your Account
-            </Button>
-          </Box>
-
-          {/* 确认删除的弹框 */}
-          <Dialog
-            open={openDeleteDialog}
-            onClose={handleCloseDeleteDialog} // 点击关闭时关闭弹框
-          >
-            <DialogTitle>{"Confirm Deletion"}</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                Are you sure you want to delete your account?
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              {/* 取消按钮 */}
-              <Button onClick={handleCloseDeleteDialog} color="primary">
-                Cancel
-              </Button>
-              {/* 确认删除按钮 */}
-              <Button onClick={handleConfirmDelete} color="error" autoFocus>
-                Confirm
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </Box>
-      </Grid>
+        </Grid>
+      </Container>
     </>
   );
 }

@@ -12,33 +12,37 @@ import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import { useLocation, useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
+import { logout } from "../utils";
+import { message } from "antd";
 
 const pages = ["My Account", "My Gallery", "Log out"];
 
-function ResponsiveAppBar(props) {
-  // const { isLoggedIn, handleLogout } = props;
-  // const Logo = "../home.png";
+const ResponsiveAppBar = ({
+  isLoggedIn,
+  username,
+  secondElem,
+  setIsLoggedIn,
+  setUsername,
+}) => {
+  // from react-router-dom
+  const navigate = useNavigate();
   const image = false;
-  const username = "H";
-  const { secondElem } = props;
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const location = useLocation();
-  const isAuthPage =
-    location.pathname.includes("signin") ||
-    location.pathname.includes("signup");
-  // const
-
   // 点击头像之后的下拉框
   const [anchorElNav, setAnchorElNav] = useState(null); // El - element
   const handleLogout = () => {
-    localStorage.removeItem(TOKEN_KEY);
-    setIsLoggedIn(false);
-    console.log("Logged out");
+    logout()
+      .then(() => {
+        message.success("Logout Successful");
+        localStorage.removeItem("username");
+        localStorage.removeItem("isLoggedIn");
+        setIsLoggedIn(false);
+        setUsername(null); // Clear the username
+        navigate("/"); // Redirect to home page
+      })
+      .catch((err) => {
+        message.error("Logout failed: " + err.message);
+      });
   };
-
-  // from react-router-dom
-  const navigate = useNavigate();
-
   const handleOpenNavMenu = (event) => {
     // 当点击事件触发后，event传进来当前点击的元素。
     // 这个函数的作用是设置导航菜单锚点，点击之后将当前元素设置锚点
@@ -129,104 +133,102 @@ function ResponsiveAppBar(props) {
             | {secondElem}
           </Typography>
         </Box>
-        {!isAuthPage && ( // 如果不是登录页面才显示这段内容
-          <Box
-            sx={{
-              // position: "flex", // 固定位置
-              top: 0, // 距离顶部
-              right: "20px", // 距离右侧
-              padding: "10px", // 内边距
-              zIndex: 1000, // 确保在其他元素上面
-              display: "flex", // 使用 flex 布局
-              gap: "10px", // 按钮或头像之间的间距
-            }}
-          >
-            {!isLoggedIn ? (
-              <>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => navigate("/cityguide/signin")}
-                  style={{
-                    backgroundColor: "#284642",
-                    borderRadius: "4px",
-                  }}
-                >
-                  Sign in
-                </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => navigate("/cityguide/signup")}
-                  style={{
-                    backgroundColor: "#284642",
-                    borderRadius: "4px",
-                  }}
-                >
-                  Register
-                </Button>
-              </>
-            ) : (
-              <Box sx={{ flexGrow: 1 }}>
-                <IconButton
-                  size="large"
-                  aria-label="open menu"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleOpenNavMenu}
-                  color="inherit"
+        <Box
+          sx={{
+            // position: "flex", // 固定位置
+            top: 0, // 距离顶部
+            right: "20px", // 距离右侧
+            padding: "10px", // 内边距
+            zIndex: 1000, // 确保在其他元素上面
+            display: "flex", // 使用 flex 布局
+            gap: "10px", // 按钮或头像之间的间距
+          }}
+        >
+          {!isLoggedIn ? (
+            <>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => navigate("/cityguide/signin")}
+                style={{
+                  backgroundColor: "#1877F2",
+                  borderRadius: "4px",
+                }}
+              >
+                Sign in
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => navigate("/cityguide/signup")}
+                style={{
+                  backgroundColor: "#1877F2",
+                  borderRadius: "4px",
+                }}
+              >
+                Register
+              </Button>
+            </>
+          ) : (
+            <Box sx={{ flexGrow: 1 }}>
+              <IconButton
+                size="large"
+                aria-label="open menu"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="inherit"
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "transparent", // 移除 IconButton hover 时的背景色
+                  },
+                }}
+              >
+                <Avatar
                   sx={{
-                    "&:hover": {
-                      backgroundColor: "transparent", // 移除 IconButton hover 时的背景色
-                    },
+                    width: 65,
+                    height: 65,
+                    marginRight: "40px",
+                    cursor: "pointer",
+                    backgroundColor: image ? "transparent" : "#8B0000", // 如果没有Image，设置背景色
+                    color: image ? "inherit" : "white", // 设置首字母缩写颜色
                   }}
+                  src={image} // 如果 Image 存在，会显示头像
+                  alt="User Avatar"
                 >
-                  <Avatar
-                    sx={{
-                      width: 65,
-                      height: 65,
-                      marginRight: "40px",
-                      cursor: "pointer",
-                      backgroundColor: image ? "transparent" : "#8B0000", // 如果没有Image，设置背景色
-                      color: image ? "inherit" : "white", // 设置首字母缩写颜色
-                    }}
-                    src={image} // 如果 Image 存在，会显示头像
-                    alt="User Avatar"
-                  >
-                    {!image && username && username.charAt(0).toUpperCase()}{" "}
-                    {/* 如果没有image，显示首字母 */}
-                  </Avatar>
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorElNav}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                  // 如果anchorElNav有东西的话就会打开网页
-                  open={Boolean(anchorElNav)}
-                  // 如果点击屏幕别的地方要关闭这个drop down
-                  onClose={handleCloseNavMenu}
-                >
-                  {/* 匹配上面定义的常量 pages 里面的页面*/}
-                  {pages.map((page) => (
-                    <MenuItem key={page} onClick={() => handleNavigate(page)}>
-                      <Typography textAlign="center">{page}</Typography>
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </Box>
-            )}
-          </Box>
-        )}
+                  {!image && username && username.charAt(0).toUpperCase()}{" "}
+                  {/* 如果没有image，显示首字母 */}
+                </Avatar>
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                // 如果anchorElNav有东西的话就会打开网页
+                open={Boolean(anchorElNav)}
+                // 如果点击屏幕别的地方要关闭这个drop down
+                onClose={handleCloseNavMenu}
+              >
+                {/* 匹配上面定义的常量 pages 里面的页面*/}
+                {pages.map((page) => (
+                  <MenuItem key={page} onClick={() => handleNavigate(page)}>
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          )}
+        </Box>
       </Container>
     </AppBar>
   );
-}
+};
 export default ResponsiveAppBar;
