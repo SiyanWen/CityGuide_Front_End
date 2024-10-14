@@ -1,64 +1,91 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { Form, Input, Button, message } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 import ResponsiveAppBar from "./ResponsiveAppBar";
+import { login } from "../utils";
 
-import { BASE_URL } from "../constants";
-
-function SignIn(props) {
-  const { handleLoggedIn } = props;
+const SignIn = () => {
+  const [username, setUsername] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
-  const onFinish = (values) => {
-    console.log("values", values);
-    const { username, password } = values;
-    const option = {
-      method: "POST",
-      url: `${BASE_URL}/signin`,
-      data: {
-        username: username,
-        password: password,
-      },
-      headers: { "Content-Type": "application/json" },
-    };
-    axios(option)
-      .then((res) => {
-        if (res.status === 200) {
-          const { data } = res;
-          handleLoggedIn(data);
-          message.success("Signin succeed! ");
-        }
+  // check the status of login
+  useEffect(() => {
+    const storedStatus = localStorage.getItem("isLoggedIn") === "true";
+    const storedUsername = localStorage.getItem("username");
+    setIsLoggedIn(storedStatus);
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
+
+  const onFinish = (data) => {
+    setLoading(true);
+
+    login(data)
+      .then(() => {
+        message.success(`Login Successful`);
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("isLoggedIn", "true");
+        setIsLoggedIn(true);
+        // setUsername(data.username);
+        setUsername(data.email);
+        navigate("/cityguide/search");
       })
       .catch((err) => {
-        console.log("Signin failed: ", err.message);
-        message.error("Signin failed!");
+        message.error(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
   return (
     <>
-      <ResponsiveAppBar secondElem={"Sign In"} />
+      <ResponsiveAppBar
+        secondElem={"Sign In"}
+        isLoggedIn={isLoggedIn}
+        username={username}
+        setIsLoggedIn={setIsLoggedIn}
+        setUsername={setUsername}
+      />
 
-      <Form name="normal_login" className="login-form" onFinish={onFinish}>
+      <Form
+        name="normal_login"
+        className="login-form"
+        onFinish={onFinish}
+        requiredMark={false}
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 18 }}
+      >
         <Form.Item
-          name="username"
+          name="email"
+          label={<span style={{ fontWeight: "bold" }}>Email</span>}
           rules={[
             {
               required: true,
-              message: "Please input your Username!",
+              message: "Please input your Email!",
             },
           ]}
         >
           <Input
-            prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Username"
+            placeholder="TYPE IN YOUR EMAIL"
+            style={{
+              width: "300px",
+              border: "1px solid #D3D3D3",
+              borderRadius: "6px",
+              padding: "10px",
+              height: "40px",
+            }}
+            onFocus={(e) => (e.target.placeholder = "")}
+            onBlur={(e) => (e.target.placeholder = "TYPE IN YOUR EMAIL")}
           />
         </Form.Item>
+
         <Form.Item
           name="password"
+          label={<span style={{ fontWeight: "bold" }}>Password</span>}
           rules={[
             {
               required: true,
@@ -67,30 +94,53 @@ function SignIn(props) {
           ]}
         >
           <Input
-            prefix={<LockOutlined className="site-form-item-icon" />}
             type="password"
-            placeholder="Password"
+            placeholder="SET YOUR PASSWORD"
+            style={{
+              width: "300px",
+              border: "1px solid #D3D3D3",
+              borderRadius: "6px",
+              padding: "10px",
+              height: "40px",
+            }}
+            onFocus={(e) => (e.target.placeholder = "")}
+            onBlur={(e) => (e.target.placeholder = "SET YOUR PASSWORD")}
           />
         </Form.Item>
 
-        <Form.Item>
+        <Form.Item
+          style={{
+            width: "500px",
+          }}
+        >
           <Link
             to="/cityguide/signup/"
             style={{
-              color: "black",
+              display: "inline-block",
+              width: "120px",
+              color: "white",
               padding: "6px",
-              margin: "30px",
-              backgroundColor: "#BDBDBD",
+              marginLeft: "60px",
+              backgroundColor: "#284642",
+              borderRadius: "4px",
+              border: "1px solid #1890ff",
             }}
           >
-            Go to SignUp
+            Go to Sign Up
           </Link>
 
           <Button
             type="primary"
             htmlType="submit"
             className="login-form-button"
-            style={{ width: "45%", backgroundColor: "#284642" }}
+            style={{
+              width: "120px",
+              backgroundColor: "#284642",
+              height: "36px",
+              borderRadius: "4px",
+              marginLeft: "40px",
+            }}
+            loading={loading}
           >
             Sign in
           </Button>
@@ -98,6 +148,5 @@ function SignIn(props) {
       </Form>
     </>
   );
-}
-
+};
 export default SignIn;
