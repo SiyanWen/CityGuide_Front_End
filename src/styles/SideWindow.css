@@ -1,0 +1,46 @@
+.main-container {
+  position: relative;
+  width: 470px;
+  height: 800px;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.place-overview {
+  position: absolute;
+  width: 450px;
+  height: 750px;
+}
+
+.top-button {
+  position: absolute;
+  width: 145px;
+  height: 70px;
+  top: 18px;
+  left: 306px;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+}
+
+.my-selection {
+  position: relative;
+  left: 12px;
+}
+.collective-button {
+  position: relative;
+  top: 5px;
+  left: 82px;
+}
+
+.bottom-button {
+  position: absolute;
+  left: 25px;
+  top: 770px;
+  background-color: transparent;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}

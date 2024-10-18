@@ -1,3 +1,17 @@
+<<<<<<< HEAD
+import React from "react";
+import CustomMap from "./MapMainPage.js";
+
+const App = () => {
+
+  return(
+    <div>
+      <CustomMap />
+    </div>
+  );
+
+};
+=======
 // import React, { useState, useContext } from "react";
 // import ResponsiveAppBar from "./ResponsiveAppBar";
 // import Main from "./Main";
@@ -67,4 +81,5 @@ function App() {
   );
 }
 
+>>>>>>> aaa500f96f40af7f81dded91976eec101324b02a
 export default App;
