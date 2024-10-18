@@ -7,7 +7,7 @@ import Drawer from "@mui/material/Drawer";
 import Stack from "@mui/material/Stack";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
-import ".../styles/SideWindow.css";
+import "../../styles/SideWindow.css";
 
 import { ThemeProvider } from "@mui/material/styles";
 import myTheme from "../../MyMuiTheme.js";

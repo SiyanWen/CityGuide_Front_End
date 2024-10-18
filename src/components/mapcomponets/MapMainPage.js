@@ -4,7 +4,7 @@ import { Fab } from "@mui/material";
 import { Home } from "@mui/icons-material";
 import { ThemeProvider } from "@mui/material/styles";
 
-import ".../styles/CustomMap.css";
+import "../../styles/CustomMap.css";
 import myTheme from "../../MyMuiTheme";
 import PlaceAutocomplete from "./AutocompleteString";
 import MapHandler from "./HandleMap";

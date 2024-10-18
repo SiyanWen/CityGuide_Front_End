@@ -113,7 +113,7 @@ const AddToMySelection = ({ place }) => {
     console.log("Does it work here???");
     addToUserSpot(dataForm)
       .then(()=>{setOpen(true);})
-      .catch((err)=>message.error(err.message))
+      .catch((err)=>console.log(err.message))
       .finally(()=>{setLoading(false);})
   };
 

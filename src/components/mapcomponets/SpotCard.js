@@ -1,5 +1,7 @@
 import React, { useContext, useState } from "react";
 import Stack from "@mui/material/Stack";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -11,10 +13,11 @@ import Rating from "@mui/material/Rating";
 import StarIcon from "@mui/icons-material/Star";
 import RemoveIcon from "@mui/icons-material/Remove";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { removeSpotFromMySelection } from "../../utils";
 
 import { ThemeProvider } from "@mui/material/styles";
 import myTheme from "../../MyMuiTheme";
-import ".../styles/SpotCard.css";
+import "../../styles/SpotCard.css";
 
 import CollectiveButton from "./CollectiveButton";
 
@@ -38,7 +41,7 @@ const SpotCard = ({ spotsList }) => {
   const handleRemove = (spotId) => {
     removeSpotFromMySelection(spotId)
       .then(()=>{setOpen(true)})
-      .catch((err)=>message.error(err.message))
+      .catch((err)=>console.log(err.message))
   };
 
   const handleClose = (event, reason) => {
@@ -107,7 +110,7 @@ const SpotCard = ({ spotsList }) => {
                           />
                           <Box sx={{ ml: 2 }}>{labels[4.6]}</Box>
                         </Box>
-                      <div className={description}>
+                      <div className='description'>
                       <Typography
                           variant="subtitle1"
                           component="div"

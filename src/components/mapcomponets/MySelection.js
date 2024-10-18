@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
 import Drawer from "@mui/material/Drawer";
 import Stack from "@mui/material/Stack";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import Button from "@mui/material/Button";
-import ".../styles/MySelection.css";
+import "../../styles/MySelection.css";
+
+import { getMySelection } from "../../utils";
 
 
 import { ThemeProvider } from "@mui/material/styles";
@@ -23,7 +25,7 @@ const MySelection = ({open, onClose}) => {
         setSpotsData(data);
       })
       .catch((err) => {
-        message.error(err.message);
+        console.log(err.message);
       })
   }, []);
 

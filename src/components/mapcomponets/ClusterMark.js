@@ -7,7 +7,7 @@ import {
   InfoWindow,
   useAdvancedMarkerRef,
 } from "@vis.gl/react-google-maps";
-import ".../styles/MarkerCluster.css"
+import "../../styles/MarkerCluster.css"
 
 const MarkerCluster = () => {
   const spots = [
