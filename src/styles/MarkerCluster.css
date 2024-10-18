@@ -1,0 +1,17 @@
+.spot-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;  
+}
+
+.spot-content span{
+    margin: 2px;
+}
+
+.span1{
+    font-size: 24px;
+}
+.span2{
+    font-size: 16px;
+}

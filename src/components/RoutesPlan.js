@@ -15,8 +15,8 @@ const RoutesRender = () => {
 
   useEffect(() => {
     if (!routesLib || !map) return;
-    setDirectionsService(new routesLib.DirectionsService());
-    setDirectionsRenderer(new routesLib.DirectionsRenderer({ map }));
+    setDirectionsService(new routesLib.DirectionsService()); //后端返回，这个就没用了
+    setDirectionsRenderer(new routesLib.DirectionsRenderer({ map })); 
   }, [routesLib, map]);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const RoutesRender = () => {
       .then((response) => {
         // console.log(response);
         // console.log(JSON.stringify(response));
-        directionsRenderer.setDirections(response);
+        directionsRenderer.setDirections(response);        //后端返回的话，只用这两句
         setRoutes(response.routes);
       });
 

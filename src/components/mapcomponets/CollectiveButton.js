@@ -3,7 +3,7 @@ import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import Button from "@mui/material/Button";
 import { ThemeProvider } from "@mui/material/styles";
-import myTheme from "../MyMuiTheme";
+import myTheme from "../../MyMuiTheme";
 
 const CollectiveButton = () => {
   const [collect, setCollect] = useState(false);
@@ -20,7 +20,7 @@ const CollectiveButton = () => {
         color="secondary"
         onClick={handleClick}
         size="small"
-        style={{transform: "scale(0.95)" }}
+        style={{ transform: "scale(0.95)" }}
       >
         {collect ? (
           <StarIcon fontSize="small" color="yellow" />

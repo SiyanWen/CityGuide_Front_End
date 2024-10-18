@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Form,
   Input,
@@ -11,6 +12,7 @@ import {
   Row,
   Col,
 } from "antd";
+
 
 const { Option } = Select;
 
@@ -136,6 +138,14 @@ const Plan = () => {
   const [current, setCurrent] = useState(0);
   const [days, setDays] = useState(1);
 
+  const[surveyInfo,setSurveyInfo]=useState({
+    travel_days:1,
+    spots_per_day: 2,
+    budgets:{food:0,transport:0,ticket:0,total:0},
+  });
+  const[startEndSpot,setStartEndSpot]=useState({});
+  const[traffic,setTraffic]=useState({});
+
   const next = () => {
     setCurrent(current + 1);
   };
@@ -189,6 +199,7 @@ const Plan = () => {
             type="primary"
             onClick={() => message.success("Processing complete!")}
           >
+            <Link to="/cityguide/planning">survey</Link>
             Done
           </Button>
         )}
