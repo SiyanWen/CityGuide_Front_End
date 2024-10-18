@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { PlaceOverview } from "@googlemaps/extended-component-library/react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -6,17 +7,16 @@ import Drawer from "@mui/material/Drawer";
 import Stack from "@mui/material/Stack";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
-import "../styles/SideWindow.css";
+import ".../styles/SideWindow.css";
 
 import { ThemeProvider } from "@mui/material/styles";
-import myTheme from "../MyMuiTheme";
+import myTheme from "../../MyMuiTheme.js";
 
 import AddToMySelection from "./AddToMySelection.js";
 import CollectiveButton from "./CollectiveButton.js";
 import MySelection from "./MySelection.js";
 
 const SideWindow = ({ place, open, onClose }) => {
-  // const{totalSelection}=useContext(TotalSelectionContext);
   const [pid, setPid] = useState(null);
   const [mySelection, setMySelection] = useState([]);
   const [openList, setOpenList] = useState(false);
@@ -33,15 +33,15 @@ const SideWindow = ({ place, open, onClose }) => {
   }, [place]);
 
   const handleAdd = () => {
-    const spotAttribute=Object.entries(place);
-    setMySelection([...mySelection,...spotAttribute]);
+    const spotAttribute = Object.entries(place);
+    setMySelection([...mySelection, ...spotAttribute]);
     console.log(spotAttribute);
     console.log(mySelection);
   };
 
   const handleClick = () => {
     setOpenList(true);
-    console.log('true')
+    console.log("true");
   };
 
   const deleteSpot = (outerIndex) => {
@@ -63,6 +63,13 @@ const SideWindow = ({ place, open, onClose }) => {
 
           <div className="top-button">
             <div className="my-selection">
+            <Button
+                variant="contained"
+                color="secondary"
+              >
+                <Link to="/cityguide/mygallery">Gallery</Link>
+                My Gallery
+              </Button>
               <Button
                 variant="contained"
                 color="secondary"
@@ -88,14 +95,12 @@ const SideWindow = ({ place, open, onClose }) => {
                 Back to Map
               </Button>
 
-              <AddToMySelection place={place}/>
+              <AddToMySelection place={place} />
             </Stack>
           </div>
         </ThemeProvider>
 
         <MySelection
-          mySpots={mySelection}
-          onDeleted={deleteSpot}
           open={openList}
           onClose={onClose}
         />

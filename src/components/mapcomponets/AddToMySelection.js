@@ -4,16 +4,16 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import AddIcon from "@mui/icons-material/Add";
 import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
-import { addToUserSpot } from "../utils";
+import { addToUserSpot } from "../../utils";
 
 const AddToMySelection = ({ place }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [summary, setSummary] = useState(null);
   const [placesService, setPlacesService] = useState(null);
   const [data, setData] = useState(null);
+  const [baseinfo,setBaseinfo]=useState(place);
+  const [summary, setSummary] = useState("");
   const [photo, setPhoto] = useState("");
-  const [postForm, setPostForm] = useState(null);
 
   // const map = useMap();
   const placesLib = useMapsLibrary("places");
@@ -29,7 +29,8 @@ const AddToMySelection = ({ place }) => {
     console.log("places.placesservice work!");
 
     const opt = { id: place.place_id };
-    setSummary(new placesLib.Place(opt).editorialSummary);
+    let a_summary_string=new placesLib.Place(opt).editorialSummary;
+    setSummary(`[editorial_summary]:${a_summary_string}`);
     console.log(JSON.stringify(summary));
   }, [placesLib]);
 
@@ -92,16 +93,11 @@ const AddToMySelection = ({ place }) => {
         console.log(JSON.stringify(result));
 
         let img_url = JSON.stringify(result.photos[0].getUrl());
-        let photoReference=modify_url(img_url);
-        console.log("image reference:", photoReference);
-        console.log("image url:", img_url);
+        let photo_reference = modify_url(img_url);
+        setPhoto(`[photo_reference]:${photo_reference}`);
+        // console.log("image reference:", photoReference);
+        // console.log("image url:", img_url);
         // fetchImage(photoReference);
-
-        // let img_url = JSON.stringify(result.photos[0].getUrl());
-        // let try_url = result.photos[0].raw_reference;
-        // console.log("the img_url", img_url);
-        // console.log("the try_url", JSON.stringify(try_url),try_url);
-        // fetchImage(img_url);
 
         delete result.photos;
         setData(result);
@@ -109,13 +105,17 @@ const AddToMySelection = ({ place }) => {
         console.log("failed to fetch datails:", status);
       }
     });
+  }, [placesService, loading]);
 
-    const dataForm = { ...place,...data, ...summary,...photo };
-    setPostForm(dataForm);
+  const postDataBack=()=>{
+    const dataForm = { ...baseinfo, ...data, ...summary, ...photo};
     console.log(JSON.stringify(dataForm));
     console.log("Does it work here???");
-    addToUserSpot(postForm);
-  }, [placesService, loading]);
+    addToUserSpot(dataForm)
+      .then(()=>{setOpen(true);})
+      .catch((err)=>message.error(err.message))
+      .finally(()=>{setLoading(false);})
+  };
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -129,7 +129,10 @@ const AddToMySelection = ({ place }) => {
       <LoadingButton
         size="small"
         color="secondary"
-        onClick={handleClick}
+        onClick={()=>{
+          handleClick();
+          setTimeout(()=>{console.log("wait for data back")},1500);
+          postDataBack();}}
         loading={loading}
         loadingPosition="start"
         startIcon={<AddIcon />}

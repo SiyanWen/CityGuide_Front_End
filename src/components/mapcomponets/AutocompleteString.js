@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
-import "../styles/Autocomplete.css";
+import ".../styles/Autocomplete.css";
 
 const PlaceAutocomplete = ({ onPlaceSelect, onPlace }) => {
   const [placeAutocomplete, setPlaceAutocomplete] = useState(null);

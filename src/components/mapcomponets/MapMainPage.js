@@ -4,16 +4,13 @@ import { Fab } from "@mui/material";
 import { Home } from "@mui/icons-material";
 import { ThemeProvider } from "@mui/material/styles";
 
-import "../styles/CustomMap.css";
-import myTheme from "../MyMuiTheme";
+import ".../styles/CustomMap.css";
+import myTheme from "../../MyMuiTheme";
 import PlaceAutocomplete from "./AutocompleteString";
 import MapHandler from "./HandleMap";
 import SideWindow from "./SideWindow";
 
-
-
 const CustomMap = () => {
-
   const API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
   const [selectedPlace, setSelectdPlace] = useState(null);
@@ -27,8 +24,6 @@ const CustomMap = () => {
   // const handleClearSelectedPlace = () => {
 
   // };
-
-
 
   //   const updateSelection = (newAdd) => {
   //     setAllSelection([...allSelection,newAdd]);
@@ -94,11 +89,14 @@ const CustomMap = () => {
         </div>
 
         {/* <SharedDataContext.Provider value={{ totalSelection, setTotalSelection }}> */}
-        <SideWindow place={selectedPlace} open={open} onClose={clearSpot}></SideWindow>
+        <SideWindow
+          place={selectedPlace}
+          open={open}
+          onClose={clearSpot}
+        ></SideWindow>
         {/* </SharedDataContext.Provider> */}
 
-        <MapHandler place={selectedPlace} onLoad={loaded}/>
-
+        <MapHandler place={selectedPlace} onLoad={loaded} />
       </div>
     </APIProvider>
   );
