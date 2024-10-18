@@ -10,6 +10,7 @@
     "@googlemaps/markerclusterer": "^2.5.3",
     "@googlemaps/places": "^1.6.0",
     "@mui/icons-material": "^6.1.2",
+    "@mui/lab": "^6.0.0-beta.11",
     "@mui/material": "^6.1.1",
     "@mui/styled-engine-sc": "^6.1.1",
     "@react-google-maps/api": "^2.19.3",

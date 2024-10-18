@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Map, AdvancedMarker, Pin } from "@vis.gl/react-google-maps";
-
+import RoutesRender from "./RoutesPlan";
+import MarkerCluster from "./ClusterMark";
 const DEFAULT_CENTER = { lat: 47.608013, lng: -122.335167 };
 const DEFAULT_ZOOM = 13;
 const DEFAULT_ZOOM_WITH_LOCATION = 16;
@@ -35,6 +36,8 @@ const MapHandler = ({ place, onLoad }) => {
           ></Pin>
         </AdvancedMarker>
       )}
+      <RoutesRender/>
+      <MarkerCluster/>
     </Map>
   );
 };

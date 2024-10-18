@@ -46,7 +46,7 @@ const SpotCard = () => {
               <CardMedia
                 component="img"
                 sx={{ width: 151 }}
-                image="https://maps.google.com/maps/contrib/117621118677247774346"
+                image="https://lh3.googleusercontent.com/places/ANXAkqEnE_wL8E9C2CdyyQS5vl9NiQfn7XgzU_4dGFWrbcyO_E1FBM-LMeEMSp924G68mQM7oU7E3AHv72J4XK7jIBV3uQocaaTtN-g=s1600-w400"
                 alt="Space Needle"
               />
             </div>

@@ -11,6 +11,7 @@ import "../styles/SideWindow.css";
 import { ThemeProvider } from "@mui/material/styles";
 import myTheme from "../MyMuiTheme";
 
+import AddToMySelection from "./AddToMySelection.js";
 import CollectiveButton from "./CollectiveButton.js";
 import MySelection from "./MySelection.js";
 
@@ -35,7 +36,7 @@ const SideWindow = ({ place, open, onClose }) => {
     const spotAttribute=Object.entries(place);
     setMySelection([...mySelection,...spotAttribute]);
     console.log(spotAttribute);
-    console.log(JSON.stringify(mySelection));
+    console.log(mySelection);
   };
 
   const handleClick = () => {
@@ -87,14 +88,7 @@ const SideWindow = ({ place, open, onClose }) => {
                 Back to Map
               </Button>
 
-              <Button
-                variant="contained"
-                color="secondary"
-                startIcon={<AddIcon fontSize="small" />}
-                onClick={()=>{handleAdd();handleClick();}}
-              >
-                Add to MySelection
-              </Button>
+              <AddToMySelection place={place}/>
             </Stack>
           </div>
         </ThemeProvider>

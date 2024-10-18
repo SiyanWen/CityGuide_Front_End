@@ -1,20 +1,21 @@
-export const addSpotToMySelection = (spot) => {
+export const addToUserSpot = (spot) => {
     const payload = {
         original_spot_gid: spot.place_id,
         name: spot.name,
-        description: spot.WHAT,
+        description: spot.editorial_summary,
         address: spot.formatted_address,
-        rating: spot.WHAT,
-        rating_count: spot.WHAT,
-        cost: spot.WHAT,
-        duration_time:spot.WHAT,
-        image_url: spot.photo[0],
-        review: spot.WHAT,
+        type:spot.type,
+        rating: spot.rating,
+        rating_count: spot.user_ratings_total,
+        cost: spot.price_level,
+        duration_time:spot.opening_hours,
+        image_url: spot.photo,
+        review: spot.reviews,
         lat: spot.geometry.location.lat,
         lng: spot.geometry.location.lng,
     };
   
-    return fetch(`/`, {
+    return fetch(`/cart`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -23,6 +24,6 @@ export const addSpotToMySelection = (spot) => {
     }).then((response) => {
       if (response.status < 200 || response.status >= 300) {
         throw Error("Fail to add spot to MySelection");
-      }
+      }else{return true}
     });
   };
