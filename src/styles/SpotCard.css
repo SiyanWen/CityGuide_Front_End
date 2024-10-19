@@ -1,0 +1,39 @@
+.card-container {
+  position: relative;
+  top: 5px;
+  left: 10px;
+  background-color: aqua;
+  padding: 10px;
+}
+
+.photo-cotainer {
+  position: relative;
+  background-color: aquamarine;
+}
+
+.content-cotainer {
+  position: relative;
+  background-color: pink;
+}
+.main-content {
+}
+.sub-content {
+}
+.stars {
+}
+
+.button-cotainer-top {
+  position: absolute;
+  width: 145px;
+  height: 70px;
+  top: 18px;
+  left: 306px;
+  background-color: blue;
+}
+
+.button-cotainer-bottom {
+  position: absolute;
+  left: 380px;
+  top: 100px;
+  background-color: greenyellow;
+}

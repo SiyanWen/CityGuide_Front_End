@@ -1,7 +1,10 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
+<<<<<<< HEAD
+=======
 /package-lock.json
+>>>>>>> aaa500f96f40af7f81dded91976eec101324b02a
 /node_modules
 /.pnp
 .pnp.js
