@@ -52,7 +52,8 @@ export const logout = () => {
   });
 };
 
-export const addToUserSpot = (spot) => {
+
+export const addToUserSpot = ({spot}) => {
     const payload = {
         original_spot_gid: spot.place_id,
         name: spot.name,
@@ -63,13 +64,13 @@ export const addToUserSpot = (spot) => {
         rating_count: spot.user_ratings_total,
         cost: spot.price_level,
         duration_time:spot.opening_hours,
-        image_url: spot.photo,
+        image_url: spot.photo_reference,
         review: spot.reviews,
         lat: spot.geometry.location.lat,
         lng: spot.geometry.location.lng,
     };
   
-    return fetch(`/cart`, {
+    return fetch(`/cart/spot`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -79,5 +80,30 @@ export const addToUserSpot = (spot) => {
       if (response.status < 200 || response.status >= 300) {
         throw Error("Fail to add spot to MySelection");
       }else{return true}
+    });
+  };
+
+
+  export const removeSpotFromMySelection = (spotId) => {
+    return fetch(`/cart/spot/${spotId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((response) => {
+      if (response.status < 200 || response.status >= 300) {
+        throw Error("Fail to delete");
+      }
+    });
+  };
+
+
+  export const getMySelection = () => {
+    return fetch("/cart").then((response) => {
+      if (response.status < 200 || response.status >= 300) {
+        throw Error("Fail to get MySelection");
+      }
+  
+      return response.json();
     });
   };
