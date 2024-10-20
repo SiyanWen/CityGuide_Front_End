@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext, createContext } from "react";
+import { Link } from "react-router-dom";
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
 import { Fab } from "@mui/material";
 import { Home } from "@mui/icons-material";
@@ -82,6 +83,7 @@ const CustomMap = () => {
                 size="small"
                 style={{ boxShadow: "none", transform: "scale(0.95)" }}
               >
+                <Link to="/cityguide/search"></Link>
                 <Home fontSize="small" />
               </Fab>
             </div>
