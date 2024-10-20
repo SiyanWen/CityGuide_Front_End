@@ -2,6 +2,7 @@ import React, { useState } from "react";
 // import Popover from "@mui/material/Popover";
 // import Typography from "@mui/material/Typography";
 import {
+  useMap,
   AdvancedMarker,
   Pin,
   InfoWindow,
@@ -10,6 +11,7 @@ import {
 import "../../styles/MarkerCluster.css"
 
 const MarkerCluster = () => {
+  const map = useMap();
   const spots = [
     {
       name: "Seattle Aquarium ",

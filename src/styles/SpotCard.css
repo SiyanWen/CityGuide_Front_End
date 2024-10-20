@@ -14,7 +14,9 @@
 .content-cotainer {
   position: relative;
   background-color: pink;
+  text-align: left;
 }
+
 .main-content {
 }
 .sub-content {

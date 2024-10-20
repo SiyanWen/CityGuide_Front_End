@@ -19,20 +19,24 @@
   width: 145px;
   height: 70px;
   top: 18px;
-  left: 306px;
+  left: 300px;
   background-color: transparent;
   display: flex;
   flex-direction: column;
 }
-
+.my-gallery{
+  padding:3px;
+  position: relative;
+  left: 20px;
+}
 .my-selection {
   position: relative;
   left: 12px;
 }
 .collective-button {
   position: relative;
-  top: 5px;
-  left: 82px;
+  top: 2px;
+  left: 48px;
 }
 
 .bottom-button {
