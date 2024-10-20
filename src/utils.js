@@ -53,59 +53,67 @@ export const logout = () => {
   });
 };
 
-
-export const addToUserSpot = ({spot}) => {
-    const payload = {
-        originalGid: spot.place_id,
-        name: spot.name,
-        description: spot.editorial_summary,
-        address: spot.formatted_address,
-        type:spot.type,
-        rating: spot.rating,
-        ratingCount: spot.user_ratings_total,
-        cost: spot.price_level,
-        durationTime:spot.opening_hours,
-        coverImgUrl: spot.photo_reference,
-        review: spot.reviews,
-        latitude: spot.geometry.location.lat,
-        longitude: spot.geometry.location.lng,
-    };
-  
-    return fetch(`/cart/spot`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    }).then((response) => {
-      if (response.status < 200 || response.status >= 300) {
-        throw Error("Fail to add spot to MySelection");
-      }
-    });
+export const addToUserSpot = (spot) => {
+  console.log("spot_info:", spot);
+  function lat() {
+    return spot.geometry.location.lat;
+  }
+  function lng() {
+    return spot.geometry.location.lng;
+  }
+  const latitude = lat();
+  const longitude = lng();
+  const payload = {
+    original_gid: spot.place_id,
+    name: spot.name,
+    description: spot.editorial_summary,
+    address: spot.formatted_address,
+    type: spot.type,
+    rating: spot.rating,
+    rating_count: spot.user_ratings_total,
+    cost: spot.price_level,
+    opening_hours: spot.opening_hours,
+    cover_img_url: spot.photo_reference,
+    review: spot.reviews,
+    latitude: latitude(),
+    longitude: longitude(),
   };
+  console.log("payload:", payload);
 
-  // export const postSurvey = ({survey}) => {
-  //   const payload = {
-  //       daysToPlay: survey,travel_days,
-  //       budget: survey.budgets,
-  //       spotsPerday: survey.travel_days,
-  //       trafficModes: survey.traffic,
-  //       startEndPoint: survey.startEndSpot,
-  //   };
-  
-  //   return fetch("/survey", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(payload),
-  //   }).then((response) => {
-  //     if (response.status < 200 || response.status >= 300) {
-  //       throw Error("Fail to add spot to MySelection");
-  //     }
-  //   });
-  // };
+  return fetch(`/cart/spot`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  }).then((response) => {
+    if (response.status < 200 || response.status >= 300) {
+      throw Error("Fail to add spot to MySelection");
+    }
+  });
+};
 
+// export const postSurvey = ({survey}) => {
+//   const payload = {
+//       daysToPlay: survey,travel_days,
+//       budget: survey.budgets,
+//       spotsPerday: survey.travel_days,
+//       trafficModes: survey.traffic,
+//       startEndPoint: survey.startEndSpot,
+//   };
+
+//   return fetch("/survey", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(payload),
+//   }).then((response) => {
+//     if (response.status < 200 || response.status >= 300) {
+//       throw Error("Fail to add spot to MySelection");
+//     }
+//   });
+// };
 
 export const removeSpotFromMySelection = (spotId) => {
   return fetch(`/cart/spot/${spotId}`, {
