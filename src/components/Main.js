@@ -68,11 +68,31 @@ function Main() {
     return isSignedIn ? <UserInfo /> : <Navigate to="/cityguide/signin" />;
   };
   //http://localhost:3000/cityguide
+
+  const [city, setCity] = useState({ id: "", name: "" });
+
+  // 父容器接收城市ID和名称的函数
+  const handleCitySelection = (cityId, cityName) => {
+    setCity({ id: cityId, name: cityName });
+
+    // 在父容器中打印城市ID和城市名称
+    console.log("From main");
+    console.log("Selected City ID:", cityId);
+    console.log("Selected City Name:", cityName);
+  };
   return (
     <div className="main">
       <Routes>
-        <Route path="/" exact element={showLanding()} />
-        <Route path="/cityguide" exact element={showLanding()} />
+        <Route
+          path="/"
+          exact
+          element={<Landing onCityChange={handleCitySelection} />}
+        />
+        <Route
+          path="/cityguide"
+          exact
+          element={<Landing onCityChange={handleCitySelection} />}
+        />
         <Route path="/cityguide/search" element={showSearch()} />
         <Route path="/cityguide/mapping" element={showMapping()} />
         <Route path="/cityguide/survey" element={showSurvey()} />

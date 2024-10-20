@@ -193,6 +193,10 @@ function UserInfo() {
       })
       .catch((err) => {
         message.error("Logout failed: " + err.message);
+      })
+      .finally(() => {
+        localStorage.removeItem("username");
+        localStorage.removeItem("isLoggedIn");
       });
   };
 
