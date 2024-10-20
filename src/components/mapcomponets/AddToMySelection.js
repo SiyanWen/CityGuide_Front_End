@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useMemo } from "react";
 import { LoadingButton } from "@mui/lab";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
@@ -13,12 +13,15 @@ const AddToMySelection = ({ place }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [placesService, setPlacesService] = useState(null);
+  const [placeGM, setPlaceGM] = useState(null);
   const [data, setData] = useState(null);
-  const [baseinfo,setBaseinfo]=useState(place);
-  const [summary, setSummary] = useState(null);
-  const [photo, setPhoto] = useState(null);
-  let a_summary_string;
-  let photo_reference ;
+  // const [photo,setPhoto]=useState();
+  // const [pid, setPid] = useState(null);
+  // const [str, setStr]=useState(null);
+
+  const summary=useMemo(()=>{return {edieditorial_summary:''};},[]);
+  const photo=useMemo(()=>{return {photo_reference:''};},[]);
+
   // const map = useMap();
   const placesLib = useMapsLibrary("places");
 
@@ -26,24 +29,26 @@ const AddToMySelection = ({ place }) => {
     setLoading(true);
   };
 
+  // useEffect(()=>{
+  //   if(!place)return;
+  //   setPid(place.place_id)
+  //   console.log(place.place_id);
+  // },[place]);
+
   useEffect(() => {
-    if (!placesLib) return;
+    if (!placesLib||!place) return;
     const div = document.createElement("div");
     setPlacesService(new placesLib.PlacesService(div));
-    console.log("places.placesservice work!");
+    console.log("places.placesservice work!",place.place_id);
 
-    const opt = { id: place.place_id };
-    a_summary_string=new placesLib.Place(opt).editorialSummary;
-    setSummary({edieditorial_summary:`${a_summary_string}`});
-    console.log(a_summary_string);
-    console.log("a summary string",JSON.stringify(summary));
-  }, [placesLib]);
+    setPlaceGM(new placesLib.Place({ id: place.place_id, requestedLanguage: "en", }));
+  }, [placesLib, place]);
 
   useEffect(() => {
-    if (!loading || !placesService) return;
-    let placeId = place.place_id;
+    if (!loading || !placesService||!placeGM||!place||!placesLib.PlacesServiceStatus.OK) return;
+    
     const request = {
-      placeId: placeId,
+      placeId: place.place_id ,
       fields: [
         "opening_hours",
         "price_level",
@@ -54,7 +59,12 @@ const AddToMySelection = ({ place }) => {
         "photos",
       ],
     };
-
+    const another_req={fields:["editorialSummary"]}
+    placeGM.fetchFields(another_req);
+    let str=placeGM.editorialSummary
+    summary['edieditorial_summary']=`${str}`;
+    // setStr(placeGM.editorialSummary);
+    console.log(placeGM.editorialSummary);
     // const fetchImage = async (photoReference) => {
     //   const photoUrl= `https://maps.googleapis.com/maps/api/place/photo`
     //                   +`?maxwidth=400&photoreference=${photoReference}`
@@ -98,41 +108,46 @@ const AddToMySelection = ({ place }) => {
         console.log(JSON.stringify(result));
 
         let img_url = JSON.stringify(result.photos[0].getUrl());
-        photo_reference = modify_url(img_url);
-        setPhoto({photo_reference:`${photo_reference}`});
-        console.log("image reference:", photo_reference);
+        let reference = modify_url(img_url);
+        photo['photo_reference'] = `${reference}`;
+        // setPhoto(reference);
+        console.log("image reference:", reference);
         // console.log("image url:", img_url);
         // fetchImage(photoReference);
 
         delete result.photos;
-        setData(result);
+        setTimeout(()=>{setData(result);},1500);
       } else {
         console.log("failed to fetch datails:", status);
       }
     });
-  }, [placesService, loading]);
+  }, [placesService, placeGM, loading, place, photo, summary, placesLib.PlacesServiceStatus.OK]);
 
   const postDataBack=()=>{
     setTimeout(()=>{console.log("wait for data back");
       console.log(photo);
       console.log(data);
-      const dataForm = { ...baseinfo, ...data, ...a_summary_string, ...photo_reference};
+      const dataForm = { ...place, ...data, ...summary, ...photo};
       console.log(dataForm);
       console.log(JSON.stringify(dataForm));
       console.log("Does it work here???");
       // const JSONToFile = (obj, filename) =>
       //   writeFileSync(`${filename}.json`, JSON.stringify(obj, null, 2));
       // JSONToFile(dataForm, 'spots');
-      addToUserSpot(dataForm)
-        .then(()=>{setOpen(true);})
-        .catch((err) => message.error(err.message))
-        .finally(()=>{setLoading(false);})
-    },1500);
+
+      // addToUserSpot(dataForm)
+      //   .then(()=>{setOpen(true);})
+      //   .catch((err) => message.error(err.message))
+      //   .finally(()=>{setLoading(false);})
+
+      setOpen(true);
+      setLoading(false);
+    },2500);
 
   };
 
   const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
+    if (reason === "clickaway") { 
       return;
     }
     setOpen(false);

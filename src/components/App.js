@@ -72,15 +72,15 @@
 
 import React from "react";
 // import Main from "./Main";
-import Plan from "./Plan";
-// import Mapping from "./Mapping";
+// import Plan from "./Plan";
+import Mapping from "./Mapping";
 
 function App() {
   return (
     <div className="App">
       {/* <Main /> */}
-      <Plan/>
-      {/* <Mapping/> */}
+      {/* <Plan/> */}
+      <Mapping/>
     </div>
   );
 }

@@ -21,21 +21,22 @@ const MySelection = ({open, onClose}) => {
   const [spotsData, setSpotsData] = useState([]);
 
   useEffect(() => {
-    getMySelection()
-      .then((data) => {
-        setSpotsData(data);
-      })
+    // getMySelection()
+    //   .then((data) => {`
+    //     setSpotsData(data);
+    //   })
       // .catch((err) => {
       //   (err) => message.error(err.message)
       // })
   }, []);
 
+  //spotsList={spotsData} in SpotCard
   return (
     <ThemeProvider theme={myTheme}>
       <Drawer anchor="right" open={open} sx={{ width: 550 }}>
         <div className="main-container">
           <div className="selection-list">
-            <SpotCard spotsList={spotsData}/>
+            <SpotCard />   
           </div>
 
           <div className="bottom-button">
@@ -53,7 +54,7 @@ const MySelection = ({open, onClose}) => {
                 color="secondary"
                 startIcon={<AddIcon fontSize="small" />}
               >
-                <Link to="/cityguide/survey">survey</Link>
+                <Link to="/cityguide/survey"></Link>
                 Go to Plan
               </Button>
             </Stack>
