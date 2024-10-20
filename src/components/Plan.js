@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
+import { getMySelection } from "../utils";
+import { PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import {
   Form,
   Input,
   Select,
+  InputNumber,
+  Space ,
+  Divider, 
   Button,
   message,
   Steps,
@@ -12,12 +17,52 @@ import {
   Row,
   Col,
 } from "antd";
-
+import StartEndMenu from "./StartEndMenu";
 
 const { Option } = Select;
-
+let index = 0;
 // First
-const Form0 = ({ setDays }) => {
+const Form0 = ({ setDays, spotList }) => {
+  const [numSelectors, setNumSelectors] = useState();
+  const [selectedValues, setSelectedValues] = useState({}); // Store selected values
+  const [spotItems, setSpotItems] = useState(spotList);
+  const [name, setName] = useState("");
+  const inputRef = useRef(null);
+
+  const onNameChange = (event) => {
+    setName(event.target.value);
+    console.log(name);
+  };
+
+  const addItem = (e) => {
+    e.preventDefault();
+    setSpotItems([...spotList, name ]); //|| `New item ${index++}`
+    console.log(spotItems);
+    setName("");
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
+  };
+  const handleNumChange = (value) => {
+    setNumSelectors(value);
+    setSelectedValues((prevState) => ({
+      ...prevState, // Keep existing selected values
+      ...Array(value)
+        .fill()
+        .reduce(
+          (acc, _, i) => ({ ...acc, [`selector${i + 1}`]: undefined }),
+          {}
+        ), // Initialize new selectors
+    }));
+  };
+
+  const handleSelectChange = (value, key) => {
+    setSelectedValues((prevState) => ({
+      ...prevState,
+      [key]: value,
+    }));
+  };
+
   return (
     <Form layout="vertical">
       <Form.Item
@@ -29,8 +74,57 @@ const Form0 = ({ setDays }) => {
           type="number"
           min={1}
           max={7} // Limit to 15 days
-          onChange={(e) => setDays(Number(e.target.value))} // Update days state in parent
+          value={numSelectors}
+          onChange={(e) => {
+            setDays(Number(e.target.value));
+            handleNumChange(Number(e.target.value));
+          }} // Update days state in parent
         />
+      </Form.Item>
+
+      <Form.Item label="Select start and end point">
+        {Array(numSelectors)
+          .fill()
+          .map((_, i) => (
+            <Select
+              key={`selector${i + 1}`}
+              defaultValue={selectedValues[`selector${i + 1}`]}
+              onChange={(value) =>
+                handleSelectChange(value, `selector${i + 1}`)
+              }
+              style={{ width: 400, marginRight: 10 }}
+              dropdownRender={(menu) => (
+                <>
+                  {menu}
+                  <Divider
+                    style={{
+                      margin: "8px 0",
+                    }}
+                  />
+                  <Space
+                    style={{
+                      padding: "0 8px 4px",
+                    }}
+                  >
+                    <Input
+                      placeholder="Please enter your spot"
+                      ref={inputRef}
+                      value={name}
+                      onChange={onNameChange}
+                      onKeyDown={(e) => e.stopPropagation()}
+                    />
+                    <Button type="text" icon={<PlusOutlined />} onClick={addItem}>
+                      Add spot
+                    </Button>
+                  </Space>
+                </>
+              )}
+              options={spotItems.map((item) => ({
+                label: item.name,
+                value: item.name,
+              }))}
+            />
+          ))}
       </Form.Item>
     </Form>
   );
@@ -138,13 +232,72 @@ const Plan = () => {
   const [current, setCurrent] = useState(0);
   const [days, setDays] = useState(1);
 
-  const[surveyInfo,setSurveyInfo]=useState({
-    travel_days:1,
+  const [surveyInfo, setSurveyInfo] = useState({
+    travel_days: 1,
     spots_per_day: 2,
-    budgets:{food:0,transport:0,ticket:0,total:0},
+    budgets: { food: 0, transport: 0, ticket: 0, total: 0 },
   });
-  const[startEndSpot,setStartEndSpot]=useState({});
-  const[traffic,setTraffic]=useState({});
+  const [startEndSpot, setStartEndSpot] = useState({});
+  const [traffic, setTraffic] = useState({});
+
+  const spots = [
+    {
+      name: "Seattle Aquarium ",
+      location: { lat: 47.607559279254026, lng: -122.34299870775699 },
+    },
+    {
+      name: "Space Needle",
+      location: { lat: 47.62009964037968, lng: -122.3490756210929 },
+    },
+    {
+      name: "University of Washington ",
+      location: { lat: 47.65686865308057, lng: -122.30661818625246 },
+    },
+    {
+      name: "Frye Art Museum ",
+      location: { lat: 47.60813784186174, lng: -122.32415216405876 },
+    },
+    {
+      name: "West Point Lighthouse",
+      location: { lat: 47.662946075385655, lng: -122.4358662863737 },
+    },
+  ];
+  const [spotList, setSpotList] = useState(spots); //[]
+
+  // useEffect(() => {
+  //   getMySelection()
+  //     .then((data) => {
+  //       setSpotList(data);
+  //     })
+  //     .catch((err) => message.error(err.message))
+  //     .finally(() => {
+  //       deleteProperties();
+  //     });
+  // }, []);
+
+  // const deleteProperties = () => {
+  //   setSpotList((prevState) =>
+  //     prevState.reduce((ary, spot) => {
+  //       const newObj = { ...spot };
+  //       const propertiesToDelete = [
+  //         "userId",
+  //         "rating",
+  //         "ratingCount",
+  //         "cost",
+  //         "durationTime",
+  //         "openingHours",
+  //         "latitude",
+  //         "longitude",
+  //         "coverImgUrl",
+  //       ];
+  //       if (propertiesToDelete.some((key) => newObj[key])) {
+  //         // Keep only items that don't have any of the properties to delete
+  //         return ary;
+  //       }
+  //       return [...ary, newObj];
+  //     }, [])
+  //   );
+  // };
 
   const next = () => {
     setCurrent(current + 1);
@@ -170,7 +323,7 @@ const Plan = () => {
 
   const renderStepContent = () => {
     if (current === 0) {
-      return <Form0 setDays={setDays} />;
+      return <Form0 setDays={setDays} spotList={spotList} />;
     } else if (current === 1) {
       return <Form1 days={days} />;
     } else if (current === 2) {
@@ -195,11 +348,13 @@ const Plan = () => {
         )}
 
         {current === steps.length - 1 && (
-          <Button
-            type="primary"
-            onClick={() => message.success("Processing complete!")}
-          >
-            <Link to="/cityguide/planning">survey</Link>
+          <Button type="primary">
+            <Link
+              to="/cityguide/planning"
+              onClick={() => message.success("Processing complete!")}
+            >
+              survey
+            </Link>
             Done
           </Button>
         )}

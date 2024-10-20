@@ -62,14 +62,16 @@ const SideWindow = ({ place, open, onClose }) => {
           </div>
 
           <div className="top-button">
-            <div className="my-selection">
+            <div className="my-gallery">
             <Button
                 variant="contained"
                 color="secondary"
               >
-                <Link to="/cityguide/mygallery">Gallery</Link>
+                <Link to="/cityguide/mygallery"></Link>
                 My Gallery
               </Button>
+            </div>
+            <div className="my-selection">
               <Button
                 variant="contained"
                 color="secondary"

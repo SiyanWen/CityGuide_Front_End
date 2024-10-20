@@ -13,6 +13,7 @@ import Rating from "@mui/material/Rating";
 import StarIcon from "@mui/icons-material/Star";
 import RemoveIcon from "@mui/icons-material/Remove";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import {message} from "antd";
 import { removeSpotFromMySelection } from "../../utils";
 
 import { ThemeProvider } from "@mui/material/styles";
@@ -41,7 +42,7 @@ const SpotCard = ({ spotsList }) => {
   const handleRemove = (spotId) => {
     removeSpotFromMySelection(spotId)
       .then(()=>{setOpen(true)})
-      .catch((err)=>console.log(err.message))
+      .catch((err) => message.error(err.message))
   };
 
   const handleClose = (event, reason) => {

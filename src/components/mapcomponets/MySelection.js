@@ -1,5 +1,6 @@
 import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
+import {message} from "antd";
 import Drawer from "@mui/material/Drawer";
 import Stack from "@mui/material/Stack";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -24,9 +25,9 @@ const MySelection = ({open, onClose}) => {
       .then((data) => {
         setSpotsData(data);
       })
-      .catch((err) => {
-        console.log(err.message);
-      })
+      // .catch((err) => {
+      //   (err) => message.error(err.message)
+      // })
   }, []);
 
   return (
