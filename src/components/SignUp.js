@@ -71,7 +71,7 @@ const SignUp = () => {
         setIsLoggedIn(true);
         setUsername(data.username);
         message.success("Successfully signed up");
-        navigate("/cityguide/search");
+        navigate("/cityguide/signin");
       })
       .catch((err) => {
         console.error("Signup failed:", err.message); // Debugging line
@@ -96,7 +96,7 @@ const SignUp = () => {
         {...formItemLayout}
       >
         <Form.Item
-          name="username"
+          name="user_name"
           label={<span style={{ fontWeight: "bold" }}>Username</span>}
           rules={[
             {

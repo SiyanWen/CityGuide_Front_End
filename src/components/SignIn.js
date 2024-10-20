@@ -31,7 +31,7 @@ const SignIn = () => {
         setIsLoggedIn(true);
         // setUsername(data.username);
         setUsername(data.email);
-        navigate("/cityguide/search");
+        navigate("/cityguide/mapping");
       })
       .catch((err) => {
         message.error(err.message);
