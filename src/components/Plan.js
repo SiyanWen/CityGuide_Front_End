@@ -23,7 +23,7 @@ const { Option } = Select;
 let index = 0;
 // First
 const Form0 = ({ setDays, spotList }) => {
-  const [numSelectors, setNumSelectors] = useState();
+  const [numSelectors, setNumSelectors] = useState(2);
   const [selectedValues, setSelectedValues] = useState({}); // Store selected values
   const [spotItems, setSpotItems] = useState(spotList);
   const [name, setName] = useState("");
@@ -44,10 +44,10 @@ const Form0 = ({ setDays, spotList }) => {
     }, 0);
   };
   const handleNumChange = (value) => {
-    setNumSelectors(value);
+    setNumSelectors(value+1);
     setSelectedValues((prevState) => ({
       ...prevState, // Keep existing selected values
-      ...Array(value)
+      ...Array(value+1)
         .fill()
         .reduce(
           (acc, _, i) => ({ ...acc, [`selector${i + 1}`]: undefined }),

@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import { Link } from "react-router-dom";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
@@ -176,8 +177,7 @@ const SpotCard = () => {
                           variant="contained"
                           color="secondary"
                           startIcon={<MoreHorizIcon fontSize="small" />}
-                          onClick={() => {}}
-                        ></Button>
+                        ><Link to="/cityguide/mygallery"></Link></Button>
                       </Stack>
                     </div>
                     <div className="button-cotainer-bottom">

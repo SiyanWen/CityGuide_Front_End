@@ -30,6 +30,10 @@ const MySelection = ({open, onClose}) => {
       // })
   }, []);
 
+  const handleLinkClick = () => {
+    window.location.href = "/cityguide/survey"; 
+  };
+
   //spotsList={spotsData} in SpotCard
   return (
     <ThemeProvider theme={myTheme}>
@@ -53,8 +57,8 @@ const MySelection = ({open, onClose}) => {
                 variant="contained"
                 color="secondary"
                 startIcon={<AddIcon fontSize="small" />}
+                onClick={handleLinkClick}
               >
-                <Link to="/cityguide/survey"></Link>
                 Go to Plan
               </Button>
             </Stack>

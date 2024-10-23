@@ -71,16 +71,18 @@
 // export default App;
 
 import React from "react";
-// import Main from "./Main";
+import Main from "./Main";
 // import Plan from "./Plan";
-import Mapping from "./Mapping";
+// import Mapping from "./Mapping";
+// import Planning from "./Planning";
 
 function App() {
   return (
     <div className="App">
-      {/* <Main /> */}
+      <Main />
       {/* <Plan/> */}
-      <Mapping/>
+      {/* <Mapping/> */}
+      {/* <Planning/> */}
     </div>
   );
 }

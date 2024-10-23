@@ -55,20 +55,21 @@ export const logout = () => {
 
 
 export const addToUserSpot = ({spot}) => {
+    const obj=JSON.parse(spot);
     const payload = {
-        originalGid: spot.place_id,
-        name: spot.name,
-        description: spot.editorial_summary,
-        address: spot.formatted_address,
-        type:spot.type,
-        rating: spot.rating,
-        ratingCount: spot.user_ratings_total,
-        cost: spot.price_level,
-        durationTime:spot.opening_hours,
-        coverImgUrl: spot.photo_reference,
-        review: spot.reviews,
-        latitude: spot.geometry.location.lat,
-        longitude: spot.geometry.location.lng,
+        originalGid: obj.place_id,
+        name: obj.name,
+        description: obj.editorial_summary,
+        address: obj.formatted_address,
+        type:obj.type,
+        rating: obj.rating,
+        ratingCount: obj.user_ratings_total,
+        cost: obj.price_level,
+        durationTime:obj.opening_hours,
+        coverImgUrl: obj.photo_reference,
+        review: obj.reviews,
+        latitude: obj.geometry.location.lat,
+        longitude: obj.geometry.location.lng,
     };
   
     return fetch(`/cart/spot`, {

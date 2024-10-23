@@ -15,8 +15,9 @@ const RoutesRender = () => {
 
   useEffect(() => {
     if (!routesLib || !map) return;
+    console.log("here work");
     setDirectionsService(new routesLib.DirectionsService()); //后端返回，这个就没用了
-    setDirectionsRenderer(new routesLib.DirectionsRenderer({ map })); 
+    setDirectionsRenderer(new routesLib.DirectionsRenderer({ map, strokeColor:{strokeColor:"#556B2F"}})); 
   }, [routesLib, map]);
 
   useEffect(() => {
