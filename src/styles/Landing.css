@@ -1,0 +1,40 @@
+@import url("https://fonts.googleapis.com/css?family=Graduate");
+@import url("https://fonts.googleapis.com/css?family=Gravitas+One");
+
+h1 {
+  font-family: "Gravitas One";
+  color: white;
+  font-size: 80px;
+}
+h2 {
+  font-family: monospace, monospace;
+  color: white;
+}
+h5 {
+  font-family: "Graduate";
+  color: white;
+  font-size: 25px;
+}
+.line {
+  height: 3px;
+  background: white;
+}
+.green {
+  color: #284642;
+}
+table,
+th,
+td,
+tr {
+  border: 3px solid black;
+  border-collapse: collapse;
+
+  background-color: white;
+  color: black;
+}
+.my_select {
+  width: 400px;
+  height: 40px;
+  padding-left: 60px;
+  top: 15px;
+}

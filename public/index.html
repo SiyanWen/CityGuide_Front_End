@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CityGuide</title>
+    <!-- <script>
+      async function init() {
+        await customElements.whenDefined("gmp-map");
+
+        const map = document.querySelector("gmp-map");
+        const marker = document.querySelector("gmp-advanced-marker");
+        const placePicker = document.querySelector("gmpx-place-picker");
+        const infowindow = new google.maps.InfoWindow();
+
+        map.innerMap.setOptions({
+          mapTypeControl: false,
+        });
+
+        placePicker.addEventListener("gmpx-placechange", () => {
+          const place = placePicker.value;
+
+          if (!place.location) {
+            window.alert(
+              "No details available for input: '" + place.name + "'"
+            );
+            infowindow.close();
+            marker.position = null;
+            return;
+          }
+
+          if (place.viewport) {
+            map.innerMap.fitBounds(place.viewport);
+          } else {
+            map.center = place.location;
+            map.zoom = 17;
+          }
+
+          marker.position = place.location;
+          infowindow.setContent(
+            `<strong>${place.displayName}</strong><br>
+             <span>${place.formattedAddress}</span>
+          `
+          );
+          infowindow.open(map.innerMap, marker);
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", init);
+    </script>-->
+    <!-- <script
+      type="module"
+      src="https://unpkg.com/@googlemaps/extended-component-library@0.6"
+    ></script>  -->
+    <!-- <script 
+      src="https://maps.googleapis.com/maps/api/js?sensor=false&callback=initMap" async defer></script>
+    <style> -->
+      <!-- html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      .place-picker-container {
+        padding: 20px;
+      } -->
+    </style>
+  </head>
+  <body>
+    <!-- <gmpx-api-loader
+      key="AIzaSyA-iuBOU504-6rBwFM1nubrim7NM1FM1OE"
+      solution-channel="GMP_devsite_samples_v3_rgmbasicmap"
+    >
+    </gmpx-api-loader>
+    <gmp-map center="47.608013,-122.335167" zoom="13" map-id="d75d4af753b8e03d">
+      <div
+        slot="control-block-start-inline-start"
+        class="place-picker-container"
+      >
+        <gmpx-place-picker placeholder="Enter an address"></gmpx-place-picker>
+      </div>
+      <gmp-advanced-marker></gmp-advanced-marker>
+    </gmp-map> -->
+    <div id="root"></div>
+  </body>
+</html>

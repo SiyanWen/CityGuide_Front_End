@@ -1,0 +1,25 @@
+.main-container {
+  position: relative;
+  width: 470px;
+  height: 800px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.selection-list {
+  position: absolute;
+  width: 450px;
+  height: 750px;
+}
+
+.bottom-button {
+  position: absolute;
+  left: 25px;
+  top: 1050px;
+  background-color: transparent;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}

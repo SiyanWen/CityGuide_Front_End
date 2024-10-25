@@ -1,0 +1,50 @@
+.main-container {
+  position: relative;
+  width: 470px;
+  height: 800px;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.place-overview {
+  position: absolute;
+  width: 450px;
+  height: 750px;
+}
+
+.top-button {
+  position: absolute;
+  width: 145px;
+  height: 70px;
+  top: 18px;
+  left: 300px;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+}
+.my-gallery{
+  padding:3px;
+  position: relative;
+  left: 20px;
+}
+.my-selection {
+  position: relative;
+  left: 12px;
+}
+.collective-button {
+  position: relative;
+  top: 2px;
+  left: 48px;
+}
+
+.bottom-button {
+  position: absolute;
+  left: 25px;
+  top: 770px;
+  background-color: transparent;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
