@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import ResponsiveAppBar from "./appbarcomponents/ResponsiveAppBar";
 import {
   Layout,
   Menu,
@@ -24,6 +25,19 @@ import {
 const { Content, Sider } = Layout;
 
 const MyGallery = () => {
+
+  const [username, setUsername] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // check the status of login
+  useEffect(() => {
+    const storedStatus = localStorage.getItem("isLoggedIn");
+    const storedUsername = localStorage.getItem("username");
+    setIsLoggedIn(storedStatus);
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
   //
   const [selectedRoutes, setSelectedRoutes] = useState([]);
 
@@ -58,6 +72,7 @@ const MyGallery = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* 侧边栏 */}
+      
       <Sider
         width={200}
         collapsible

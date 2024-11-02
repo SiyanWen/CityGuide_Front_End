@@ -33,9 +33,9 @@ export const signup = (data) => {
 };
 
 export const getUserInfo = () => {
-  return fetch("/cityguide/userinfo").then((response) => {
+  return fetch("/user/info").then((response) => {
     if (response.status < 200 || response.status >= 300) {
-      throw Error("Fail to get restaurants");
+      throw Error("Fail to get userinfo");
     }
     return response.json();
   });

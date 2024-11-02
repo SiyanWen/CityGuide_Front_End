@@ -12,7 +12,7 @@ const SignIn = () => {
 
   // check the status of login
   useEffect(() => {
-    const storedStatus = localStorage.getItem("isLoggedIn") === "true";
+    const storedStatus = localStorage.getItem("isLoggedIn");
     const storedUsername = localStorage.getItem("username");
     setIsLoggedIn(storedStatus);
     if (storedUsername) {
@@ -26,12 +26,12 @@ const SignIn = () => {
     login(data)
       .then(() => {
         message.success(`Login Successful`);
-        localStorage.setItem("username", data.username);
-        localStorage.setItem("isLoggedIn", "true");
+        console.log(data)
+        localStorage.setItem("username", data.email);
+        localStorage.setItem("isLoggedIn", true);
         setIsLoggedIn(true);
-        // setUsername(data.username);
         setUsername(data.email);
-        navigate("/cityguide/mapping");
+        navigate("/cityguide/search");
       })
       .catch((err) => {
         message.error(err.message);

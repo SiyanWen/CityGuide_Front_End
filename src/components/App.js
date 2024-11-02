@@ -70,19 +70,18 @@
 
 // export default App;
 
-import React from "react";
-// import Main from "./Main";
-import Survey from "./Survey";
-// import Mapping from "./Mapping";
-// import Planning from "./Planning";
+import React, { useState } from "react";
+import Main from "./Main";
+// import Plan from "./Plan";
+import Mapping from "./Mapping";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   return (
     <div className="App">
-      {/* <Main /> */}
-      <Survey/>
+      <Main />
+      {/* <Plan/> */}
       {/* <Mapping/> */}
-      {/* <Planning/> */}
     </div>
   );
 }

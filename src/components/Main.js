@@ -33,9 +33,11 @@ function Main() {
   };
 
   const showMapping = () => {
+    // return <Mapping />;
     return isSignedIn ? <Mapping /> : <SignIn />;
   };
   const showSurvey = () => {
+    // return <Survey />
     return isSignedIn ? <Survey /> : <SignIn />;
   };
   const showPlanning = () => {
