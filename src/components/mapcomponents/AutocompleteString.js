@@ -19,7 +19,7 @@ const PlaceAutocomplete = ({ onPlaceSelect, onPlace }) => {
         "formatted_address",
         "place_id",
         // "rating",
-        // "type",
+        // "types",
         // "user_ratings_total",
         // "price_level",
         // "opening_hours",

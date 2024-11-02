@@ -1,5 +1,5 @@
 import React from "react";
-import CustomMap from "./mapcomponets/MapMainPage.js";
+import CustomMap from "./mapcomponents/MapMainPage.js";
 import "../styles/Landing.css";
 function Mapping() {
   return (

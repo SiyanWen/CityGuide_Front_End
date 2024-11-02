@@ -5,7 +5,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
 import { BASE_URL } from "../constants";
-import ResponsiveAppBar from "./ResponsiveAppBar";
+import ResponsiveAppBar from "./appbarcomponents/ResponsiveAppBar";
 import { signup } from "../utils";
 
 const formItemLayout = {

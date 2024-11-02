@@ -93,27 +93,27 @@ export const addToUserSpot = (spot) => {
   });
 };
 
-// export const postSurvey = ({survey}) => {
-//   const payload = {
-//       daysToPlay: survey,travel_days,
-//       budget: survey.budgets,
-//       spotsPerday: survey.travel_days,
-//       trafficModes: survey.traffic,
-//       startEndPoint: survey.startEndSpot,
-//   };
+export const postSurvey = (survey) => {
+  const payload = {
+      daysToPlay: survey.travel_days,
+      budget: survey.budgets,
+      spotsPerday: survey.spots_per_day,
+      trafficModes: survey.traffic_mode,
+      startEndPoints: survey.start_end_spots,
+  };
 
-//   return fetch("/survey", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify(payload),
-//   }).then((response) => {
-//     if (response.status < 200 || response.status >= 300) {
-//       throw Error("Fail to add spot to MySelection");
-//     }
-//   });
-// };
+  return fetch("/survey", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  }).then((response) => {
+    if (response.status < 200 || response.status >= 300) {
+      throw Error("Fail to post survey");
+    }
+  });
+};
 
 export const removeSpotFromMySelection = (spotId) => {
   return fetch(`/cart/spot/${spotId}`, {
@@ -136,4 +136,27 @@ export const getMySelection = () => {
 
     return response.json();
   });
+};
+
+
+const findIndex = (astring) => {
+  let str = astring;
+  let count = 0;
+  for (let i = str.length - 1; i >= 0; i--) {
+    if (str[i] === "&") {
+      count++;
+      if (count === 4) {
+        return i;
+      }
+    }
+  }
+};
+
+export const modify_url = (url) => {
+  let str = url;
+  let part = str.slice(71);
+
+  let cut_from = findIndex(part);
+  let photo_reference = part.slice(0, cut_from);
+  return photo_reference;
 };
