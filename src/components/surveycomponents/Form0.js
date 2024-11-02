@@ -1,12 +1,15 @@
 import React, { useRef, useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { Form, Input, Select, Space, Divider, Button } from "antd";
+// import { addToUserSpot} from "../../utils";
+import AutoInput from "./AutoInput";
 
 const Form0 = ({ setDays, spotList, updateStartEnd }) => {
   const [daysNum, setDaysNum] = useState();
   const [numSelectors, setNumSelectors] = useState();
   const [selectedValues, setSelectedValues] = useState({}); // Store selected values
   const [spotItems, setSpotItems] = useState(spotList);
+  const [newSpot, setNewSpot] = useState(null);
   const [name, setName] = useState("");
   const inputRef = useRef(null);
 
@@ -23,8 +26,13 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
     setTimeout(() => {
       inputRef.current?.focus();
     }, 0);
+    console.log(newSpot);
+    // addToUserSpot(newSpot)
+    // .then(() => {console.log("add successful!")})
+    // .catch((err) => message.error(err.message))
+    // .finally(setNewSpot(null))
   };
-  
+
   const handleNumChange = (value) => {
     setDaysNum(value);
     value = value + 1;
@@ -56,12 +64,12 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
     console.log(spotItems);
   }, [spotItems]);
 
-  const selectorHolder=(i)=>{
+  const selectorHolder = (i) => {
     if (i === 0) {
-        return 'Day 1 Start Spot';
-      } else {
-        return `Day ${i} End Spot`;
-      }
+      return "Day 1 Start Spot";
+    } else {
+      return `Day ${i} End Spot`;
+    }
   };
 
   return (
@@ -91,9 +99,7 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
               key={`selector${i}`}
               placeholder={selectorHolder(i)}
               defaultValue={selectedValues[`selector${i}`]}
-              onChange={(value) =>
-                handleSelectChange(value, `selector${i}`)
-              }
+              onChange={(value) => handleSelectChange(value, `selector${i}`)}
               style={{ width: 400, marginRight: 10 }}
               dropdownRender={(menu) => (
                 <>
@@ -108,12 +114,11 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
                       padding: "0 8px 4px",
                     }}
                   >
-                    <Input
-                      placeholder="Please enter your spot"
-                      ref={inputRef}
+                    <AutoInput
                       value={name}
-                      onChange={onNameChange}
+                      changeValue={onNameChange}
                       onKeyDown={(e) => e.stopPropagation()}
+                      setNewSpot={setNewSpot}
                     />
                     <Button
                       type="text"
