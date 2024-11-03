@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import { TOKEN_KEY } from "../constants";
-import "../styles/Landing.css";
+import { TOKEN_KEY } from "../../constants";
+import "../../styles/Landing.css";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -12,9 +12,8 @@ import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import { useLocation, useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
-import { logout } from "../utils";
+import { logout } from "../../utils";
 import { message } from "antd";
-import SignIn from "./SignIn";
 
 const pages = ["My Account", "My Gallery", "Log out"];
 
@@ -146,7 +145,6 @@ const ResponsiveAppBar = ({
           }}
         >
           {!isLoggedIn ? (
-            // <SignIn onSuccess= {() => setIsLoggedIn(true)} />
             <>
               <Button
                 variant="contained"

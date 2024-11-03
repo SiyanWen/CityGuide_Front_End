@@ -5,7 +5,7 @@ import Alert from "@mui/material/Alert";
 import AddIcon from "@mui/icons-material/Add";
 import { message } from "antd";
 import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
-import { addToUserSpot } from "../../utils";
+import { addToUserSpot, modify_url } from "../../utils";
 
 // import { writeFileSync } from 'fs';
 
@@ -129,17 +129,18 @@ const AddToMySelection = ({ place }) => {
         // fetchImage(photoReference);
 
         delete result.photos;
-        setTimeout(() => {
-          setData(result);
-        }, 1500);
+        setData(result);
+        
       } else {
         console.log("failed to fetch datails:", status);
       }
+      postDataBack();
     });
   }, [
     placesService,
     placeGM,
     loading,
+    data,
     place,
     photo,
     summary,
@@ -169,8 +170,8 @@ const AddToMySelection = ({ place }) => {
         });
 
       setOpen(true);
-      setLoading(false);
-    }, 2500);
+      // setLoading(false);
+    }, 1000);
   };
 
   const handleClose = (event, reason) => {
@@ -187,7 +188,6 @@ const AddToMySelection = ({ place }) => {
         color="secondary"
         onClick={() => {
           handleClick();
-          postDataBack();
         }}
         loading={loading}
         loadingPosition="start"
@@ -217,24 +217,4 @@ const AddToMySelection = ({ place }) => {
 
 export default AddToMySelection;
 
-const findIndex = (astring) => {
-  let str = astring;
-  let count = 0;
-  for (let i = str.length - 1; i >= 0; i--) {
-    if (str[i] === "&") {
-      count++;
-      if (count === 4) {
-        return i;
-      }
-    }
-  }
-};
 
-const modify_url = (url) => {
-  let str = url;
-  let part = str.slice(71);
-
-  let cut_from = findIndex(part);
-  let photo_reference = part.slice(0, cut_from);
-  return photo_reference;
-};

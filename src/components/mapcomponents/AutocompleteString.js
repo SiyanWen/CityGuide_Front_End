@@ -19,7 +19,7 @@ const PlaceAutocomplete = ({ onPlaceSelect, onPlace }) => {
         "formatted_address",
         "place_id",
         // "rating",
-        // "type",
+        // "types",
         // "user_ratings_total",
         // "price_level",
         // "opening_hours",
@@ -36,25 +36,9 @@ const PlaceAutocomplete = ({ onPlaceSelect, onPlace }) => {
 
     placeAutocomplete.addListener("place_changed", () => {
       onPlaceSelect(placeAutocomplete.getPlace());
-      // setData(placeAutocomplete.getPlace());
-      // let img=placeAutocomplete.getPlace().photos[0].getUrl();
-      // setPhoto(img);
-      // console.log(img);
       console.log(JSON.stringify(placeAutocomplete.getPlace()));
-      // console.log(JSON.stringify(photo));
     });
   }, [placeAutocomplete]);
-
-  // useEffect(()=>{
-  //   if(!data||!photo) return;
-  //   const newData = { ...data };
-  //   delete newData.photos;
-  //   setData(newData);
-
-  //   const dataForm = {...data, ...photo };
-  //   JSON.stringify(dataForm);
-  //   onPlaceSelect(dataForm);
-  // },[data,photo]);
 
   useEffect(() => {
     if (!onPlace) {

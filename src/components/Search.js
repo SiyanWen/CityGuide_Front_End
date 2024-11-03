@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Landing.css";
-import ResponsiveAppBar from "./ResponsiveAppBar";
+import ResponsiveAppBar from "./appbarcomponents/ResponsiveAppBar";
 import Mapping from "./Mapping";
 
 function Search() {

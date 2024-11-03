@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ResponsiveAppBar from "./ResponsiveAppBar";
+import ResponsiveAppBar from "./appbarcomponents/ResponsiveAppBar";
 import { styled } from "@mui/system";
 import { BASE_URL } from "../constants";
 import { useNavigate } from "react-router-dom";

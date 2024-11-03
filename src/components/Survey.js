@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 import { Link } from "react-router-dom";
-import ResponsiveAppBar from "./ResponsiveAppBar";
-import Plan from "./Plan";
+import ResponsiveAppBar from "./appbarcomponents/ResponsiveAppBar";
+import Plan from "./surveycomponents/Plan";
 import Box from "@mui/material/Box";
 
 function Survey() {

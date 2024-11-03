@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import ResponsiveAppBar from "./ResponsiveAppBar";
+import ResponsiveAppBar from "./appbarcomponents/ResponsiveAppBar";
 import {
   Layout,
   Menu,
