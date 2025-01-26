@@ -25,7 +25,6 @@ function Search() {
       {/* <h1 class="green">this is Search</h1>
       <Link to="/cityguide/mapping">mapping</Link> */}
       <ResponsiveAppBar
-
         isLoggedIn={isLoggedIn}
         username={username}
         setIsLoggedIn={setIsLoggedIn}

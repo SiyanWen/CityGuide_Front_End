@@ -130,7 +130,6 @@ const AddToMySelection = ({ place }) => {
 
         delete result.photos;
         setData(result);
-        
       } else {
         console.log("failed to fetch datails:", status);
       }
@@ -216,5 +215,3 @@ const AddToMySelection = ({ place }) => {
 };
 
 export default AddToMySelection;
-
-
