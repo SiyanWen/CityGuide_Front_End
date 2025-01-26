@@ -51,14 +51,7 @@ const AddToMySelection = ({ place }) => {
   }, [placesLib, place]);
 
   useEffect(() => {
-    if (
-      !loading ||
-      !placesService ||
-      !placeGM ||
-      !place ||
-      !placesLib.PlacesServiceStatus.OK
-    )
-      return;
+    if (!loading) return;
 
     const request = {
       placeId: place.place_id,
@@ -129,22 +122,19 @@ const AddToMySelection = ({ place }) => {
         // fetchImage(photoReference);
 
         delete result.photos;
-        setData(result);
+        console.log("Check if result alright: ", result);
+        if (data === null) {
+          setData(result);
+        }
+        console.log("Check if setData success: ", data);
       } else {
         console.log("failed to fetch datails:", status);
       }
-      postDataBack();
+      if (data !== null) {
+        postDataBack();
+      }
     });
-  }, [
-    placesService,
-    placeGM,
-    loading,
-    data,
-    place,
-    photo,
-    summary,
-    placesLib.PlacesServiceStatus.OK,
-  ]);
+  }, [loading, data]);
 
   const postDataBack = () => {
     setTimeout(() => {

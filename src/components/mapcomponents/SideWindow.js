@@ -63,10 +63,7 @@ const SideWindow = ({ place, open, onClose }) => {
 
           <div className="top-button">
             <div className="my-gallery">
-            <Button
-                variant="contained"
-                color="secondary"
-              >
+              <Button variant="contained" color="secondary">
                 <Link to="/cityguide/mygallery"></Link>
                 My Gallery
               </Button>
@@ -102,10 +99,7 @@ const SideWindow = ({ place, open, onClose }) => {
           </div>
         </ThemeProvider>
 
-        <MySelection
-          open={openList}
-          onClose={onClose}
-        />
+        <MySelection open={openList} onClose={onClose} />
       </div>
     </Drawer>
   );
