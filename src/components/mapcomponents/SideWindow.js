@@ -7,7 +7,7 @@ import Drawer from "@mui/material/Drawer";
 import Stack from "@mui/material/Stack";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
-import "../../styles/SideWindow.css";
+// import "../../styles/SideWindow.css";
 
 import { ThemeProvider } from "@mui/material/styles";
 import myTheme from "../../MyMuiTheme.js";
@@ -50,25 +50,38 @@ const SideWindow = ({ place, open, onClose }) => {
   };
 
   return (
-    <Drawer anchor="right" open={open} sx={{ width: 550 }}>
-      <div className="main-container">
+    <Box sx={{ display: "flex", width: "100%" }}>
+      <Drawer
+        anchor="right"
+        open={open}
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: "20vw",
+            height: "100vh",
+            position: "absolute",
+          },
+        }}
+      >
         <ThemeProvider theme={myTheme}>
-          <div className="place-overview">
-            <PlaceOverview
-              size="x-large"
-              place={pid}
-              googleLogoAlreadyDisplayed
-            ></PlaceOverview>
-          </div>
-
-          <div className="top-button">
-            <div className="my-gallery">
-              <Button variant="contained" color="secondary">
-                <Link to="/cityguide/mygallery"></Link>
-                My Gallery
-              </Button>
-            </div>
-            <div className="my-selection">
+          <Box
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              p: 2,
+              bgcolor: "background.paper",
+              borderBottom: "1px solid #ddd",
+            }}
+          >
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <Button
                 variant="contained"
                 color="secondary"
@@ -76,18 +89,49 @@ const SideWindow = ({ place, open, onClose }) => {
               >
                 My Selection
               </Button>
-            </div>
 
-            <div className="collective-button">
+              <Button variant="contained" color="secondary">
+                <Link to="/cityguide/mygallery"></Link>
+                My Gallery
+              </Button>
+
               <CollectiveButton />
-            </div>
-          </div>
+            </Stack>
+          </Box>
 
-          <div className="bottom-button">
-            <Stack direction="row" spacing={8} padding={3}>
+          <Box sx={{ overflow: "auto", pt: 8, pb: 8 }}>
+            <div style={{ height: "1500px", padding: "16px" }}>
+              <PlaceOverview
+                size="x-large"
+                place={pid}
+                googleLogoAlreadyDisplayed
+              ></PlaceOverview>
+            </div>
+          </Box>
+
+          <Box
+            sx={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              p: 2,
+              bgcolor: "background.paper",
+              borderTop: "1px solid #ddd",
+            }}
+          >
+            <Stack
+              direction="row"
+              spacing={5}
+              sx={{
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <Button
                 variant="contained"
                 color="secondary"
+                size="small"
                 startIcon={<RemoveIcon fontSize="small" />}
                 onClick={onClose}
               >
@@ -96,12 +140,13 @@ const SideWindow = ({ place, open, onClose }) => {
 
               <AddToMySelection place={place} />
             </Stack>
-          </div>
-        </ThemeProvider>
+          </Box>
 
-        <MySelection open={openList} onClose={onClose} />
-      </div>
-    </Drawer>
+          {/* 点击My Selection后打开的另外一个drawer */}
+          <MySelection open={openList} onClose={onClose} />
+        </ThemeProvider>
+      </Drawer>
+    </Box>
   );
 };
 
