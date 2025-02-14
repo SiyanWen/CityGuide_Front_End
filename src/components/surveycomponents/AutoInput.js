@@ -15,6 +15,8 @@ const AutoInput = ({ value, changeValue, keyDown, setNewSpot }) => {
 
   const places = useMapsLibrary("places");
 
+  //加isLoading，需要另一个useEffect,在input后isLoading===true, then async
+  //或者 useLayoutEffect
   useEffect(() => {
     if (!places || !inputRef.current) return;
 

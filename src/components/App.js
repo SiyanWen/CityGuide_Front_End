@@ -72,8 +72,9 @@
 
 import React, { useState } from "react";
 import Main from "./Main";
-// import Plan from "./Plan";
-import Mapping from "./Mapping";
+// import Plan from "./surveycomponents/Plan";
+// import Planning from "./Planning";
+// import Mapping from "./Mapping";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -82,6 +83,7 @@ function App() {
       <Main />
       {/* <Plan/> */}
       {/* <Mapping/> */}
+      {/* <Planning/> */}
     </div>
   );
 }

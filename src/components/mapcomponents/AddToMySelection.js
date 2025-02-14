@@ -158,7 +158,7 @@ const AddToMySelection = ({ place }) => {
           setLoading(false);
         });
 
-      setOpen(true);
+      // setOpen(true);
       // setLoading(false);
     }, 1000);
   };
