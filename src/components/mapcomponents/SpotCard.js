@@ -185,16 +185,16 @@ const SpotCard = () => {
                         variant="contained"
                         color="secondary"
                         startIcon={<RemoveIcon fontSize="small" />}
-                        onClick={handleRemove(spot.id)}
+                        onClick={()=>{handleRemove(spot.id)}}
                       ></Button>
                       <Snackbar
                         anchorOrigin={{ vertical: "top", horizontal: "center" }}
                         open={open}
                         autoHideDuration={3000}
-                        onClose={handleClose}
+                        onClose={()=>{handleClose()}}
                       >
                         <Alert
-                          onClose={handleClose}
+                          onClose={()=>{handleClose()}}
                           severity="success"
                           variant="filled"
                           sx={{ width: "100%" }}

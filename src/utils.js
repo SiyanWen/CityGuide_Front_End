@@ -94,6 +94,7 @@ export const addToUserSpot = (spot) => {
 };
 
 export const postSurvey = (survey) => {
+  console.log("survey_info:", survey);
   const payload = {
       daysToPlay: survey.travel_days,
       budget: survey.budgets,
@@ -101,6 +102,7 @@ export const postSurvey = (survey) => {
       trafficModes: survey.traffic_mode,
       startEndPoints: survey.start_end_spots,
   };
+  console.log("payload:", payload);
 
   return fetch("/survey", {
     method: "POST",
