@@ -56,7 +56,7 @@ const MySelection = ({ open, onClose }) => {
                 variant="contained"
                 color="secondary"
                 startIcon={<AddIcon fontSize="small" />}
-                onClick={handleLinkClick}
+                onClick={()=>{handleLinkClick()}}
               >
                 Go to Plan
               </Button>
