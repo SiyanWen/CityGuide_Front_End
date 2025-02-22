@@ -1,0 +1,64 @@
+.header{
+    position:absolute;
+    top: 15vh;
+    left:19vw;
+    width:60%;
+    height:5%;
+    display: "flex";
+    justify-content: "center";
+    align-self: "center";
+}
+
+h1{
+    font-family: "Gravitas One";
+    color:#26433e;
+    font-size: 50px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 700;
+    line-height: 2px;
+}
+
+h2{
+    font-family: "Gravitas One";
+    color:white;
+    font-size: 24px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 700;
+    line-height: 26.4px;
+    position: relative;
+    left:-18vw;
+    top:1vh;
+    height:5vh;
+}
+
+h5{
+    font-family: "Gravitas One";
+    color:#274541;
+    opacity: 0.9;
+    font-size: 12px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 700;
+    line-height: 2.5px;
+}
+
+h6{
+    font-family: "Spoof";
+    color:white;
+    font-size: 12px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 700;
+    line-height: 2.5px;
+}
+
+.route-title{
+    position:relative;
+    left:-0.5vw;
+    display: "flex";
+    justify-content: "center";
+    align-self: "center";
+}
+

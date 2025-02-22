@@ -101,8 +101,9 @@ const CustomMap = () => {
                 color="primary"
                 size="small"
                 style={{ boxShadow: "none", transform: "scale(0.95)" }}
+                onClick={()=>{window.location.href = "/cityguide/search";}}
               >
-                <Link to="/cityguide/search"></Link>
+                {/* <Link to="/cityguide/search"></Link> */}
                 <Home fontSize="small" />
               </Fab>
             </div>

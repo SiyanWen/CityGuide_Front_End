@@ -18,7 +18,7 @@ const CollectiveButton = () => {
       <Button
         variant="contained"
         color="secondary"
-        onClick={handleClick}
+        onClick={()=>{handleClick()}}
         size="large"
         style={{ transform: "scale(0.95)" }}
       >
