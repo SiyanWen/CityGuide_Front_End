@@ -16,13 +16,14 @@ import UserInfo from "./UserInfo";
 import { TOKEN_KEY } from "../constants";
 
 function Main() {
-  const [isSignedIn, setIsSignedIn] = useState(true);
-  const handleSignedIn = (token) => {
-    if (token) {
-      localStorage.setItem(TOKEN_KEY, token);
-      setIsSignedIn(true);
-    }
-  };
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  console.log("Main isLoggedIn:",isLoggedIn);
+  // const handleSignedIn = (token) => {
+  //   if (token) {
+  //     localStorage.setItem(TOKEN_KEY, token);
+  //     setIsSignedIn(true);
+  //   }
+  // };
 
   const showLanding = () => {
     return <Landing />;
@@ -34,40 +35,41 @@ function Main() {
 
   const showMapping = () => {
     // return <Mapping />;
-    return isSignedIn ? <Mapping /> : <SignIn />;
+    console.log("showMapping isLoggedin:",isLoggedIn);
+    return isLoggedIn ? <Mapping isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} /> : <SignIn isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>;
   };
   const showSurvey = () => {
     // return <Survey />
-    return isSignedIn ? <Survey /> : <SignIn />;
+    return isLoggedIn ? <Survey /> : <SignIn isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>;
   };
   const showPlanning = () => {
-    return isSignedIn ? <Planning /> : <SignIn />;
+    return isLoggedIn ? <Planning /> : <SignIn isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>;
   };
   const showRoute = () => {
-    return isSignedIn ? <RouteCom /> : <SignIn />;
+    return isLoggedIn ? <RouteCom /> : <SignIn isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>;
   };
   const showFinished = () => {
-    return isSignedIn ? <Finished /> : <SignIn />;
+    return isLoggedIn ? <Finished /> : <SignIn isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>;
   };
 
   const showSignIn = () => {
-    // return isSignedIn ? (
+    // return isLoggedIn ? (
     //   <Navigate to="/cityguide/search" />
     // ) : (
     //   <SignIn handleSignedIn={handleSignedIn} />
     // );
-    return <SignIn handleSignedIn={handleSignedIn} />;
+    return <SignIn isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />;
   };
 
   const showSignUp = () => {
-    // return isSignedIn ? <Navigate to="/cityguide/search" /> : <SignUp />;
-    return <SignUp handleSignedIn={handleSignedIn} />;
+    // return isLoggedIn ? <Navigate to="/cityguide/search" /> : <SignUp />;
+    return <SignUp isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />;
   };
   const showMyGallery = () => {
-    return isSignedIn ? <MyGallery /> : <Navigate to="/cityguide/signin" />;
+    return isLoggedIn ? <MyGallery /> : <Navigate to="/cityguide/signin" />;
   };
   const showUserInfo = () => {
-    return isSignedIn ? <UserInfo /> : <Navigate to="/cityguide/signin" />;
+    return isLoggedIn ? <UserInfo /> : <Navigate to="/cityguide/signin" />;
   };
   //http://localhost:3000/cityguide
 
