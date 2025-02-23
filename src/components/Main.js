@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate} from "react-router-dom";
 
 import Landing from "./Landing";
 import Search from "./Search";
@@ -23,13 +23,23 @@ function Main() {
       setIsSignedIn(true);
     }
   };
+  const [city, setCity] = useState({ id: "", name: "" });
+  const [state, setState] = useState({ id: "", name: "" });
+  const navigate = useNavigate();
+
+  useEffect(()=>{
+    if (city.name)
+    console.log("from main after",state);
+    console.log("from main after",city);
+    navigate("/cityguide/search");
+  },[city.name])
 
   const showLanding = () => {
     return <Landing />;
   };
 
   const showSearch = () => {
-    return <Search />;
+    return <Search onState={state} onCity={city} />;
   };
 
   const showMapping = () => {
@@ -71,29 +81,43 @@ function Main() {
   };
   //http://localhost:3000/cityguide
 
-  const [city, setCity] = useState({ id: "", name: "" });
+
 
   // 父容器接收城市ID和名称的函数
-  const handleCitySelection = (cityId, cityName) => {
-    setCity({ id: cityId, name: cityName });
+  // const handleCitySelection = (cityId, cityName) => {
+  //   useEffect(()=>{
+  //     setCity(prevState => ({ id: cityId, name: cityName }))
+  //   },[cityId,cityName]);
 
     // 在父容器中打印城市ID和城市名称
-    console.log("From main");
-    console.log("Selected City ID:", cityId);
-    console.log("Selected City Name:", cityName);
-  };
+  //   console.log("From main");
+  //   console.log("Selected City ID:", cityId);
+  //   console.log("Selected City Name:", cityName);
+  //   console.log(city);
+  //   setTimeout(()=>{navigate("/cityguide/search")},5000)
+  // };
+
+  // const handleStateSelection = (stateId, stateName) => {
+  //   useEffect(()=>{
+  //     setState(prevState => ({ id: stateId, name: stateName }))
+  //   },[stateId, stateName]);
+  //   console.log("Selected State Name:", stateName);
+  //   console.log(state);
+  // };
+    
+
   return (
     <div className="main">
       <Routes>
         <Route
           path="/"
           exact
-          element={<Landing onCityChange={handleCitySelection} />}
+          element={<Landing onStateChange={setState} onCityChange={setCity} />}
         />
         <Route
           path="/cityguide"
           exact
-          element={<Landing onCityChange={handleCitySelection} />}
+          element={<Landing onStateChange={setState} onCityChange={setCity} />}
         />
         <Route path="/cityguide/search" element={showSearch()} />
         <Route path="/cityguide/mapping" element={showMapping()} />
