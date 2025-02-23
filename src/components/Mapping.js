@@ -2,15 +2,15 @@ import React,{useState, useEffect }from "react";
 import CustomMap from "./mapcomponents/MapMainPage.js";
 import "../styles/Landing.css";
 import ResponsiveAppBar from "./appbarcomponents/ResponsiveAppBar";
-function Mapping() {
+function Mapping(props) {
+  const { isLoggedIn, setIsLoggedIn} = props;
   const [username, setUsername] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  console.log("Mapping isLoggedIn:",isLoggedIn);
   // check the status of login
   useEffect(() => {
-    const storedStatus = localStorage.getItem("isLoggedIn");
+    // const storedStatus = localStorage.getItem("isLoggedIn");
     const storedUsername = localStorage.getItem("username");
-    setIsLoggedIn(storedStatus);
+    // setIsLoggedIn(storedStatus);
     if (storedUsername) {
       setUsername(storedUsername);
     }

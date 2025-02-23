@@ -32,20 +32,20 @@ const tailFormItemLayout = {
   },
 };
 
-const SignUp = () => {
+const SignUp = (props) => {
   const [displayModal, setDisplayModal] = useState(false);
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const {isLoggedIn, setIsLoggedIn} = props;
 
   // check the status of login
   useEffect(() => {
-    const storedStatus = localStorage.getItem("isLoggedIn") === "true";
-    if (storedStatus) {
-      navigate("/cityguide/userinfo");
-    }
+    // const storedStatus = localStorage.getItem("isLoggedIn") === "true";
+    // if (storedStatus) {
+    //   navigate("/cityguide/userinfo");
+    // }
     const storedUsername = localStorage.getItem("username");
-    setIsLoggedIn(storedStatus);
+    // setIsLoggedIn(storedStatus);
     if (storedUsername) {
       setUsername(storedUsername);
     }
@@ -66,12 +66,12 @@ const SignUp = () => {
       .then(() => {
         console.log("Signup successful"); // Debugging line
         setDisplayModal(false);
-        localStorage.setItem("username", data.username);
-        localStorage.setItem("isLoggedIn", "true");
+        // localStorage.setItem("username", data.username);
+        // localStorage.setItem("isLoggedIn", "true");
         setIsLoggedIn(true);
         setUsername(data.username);
         message.success("Successfully signed up");
-        navigate("/cityguide/signin");
+        navigate("/cityguide/search");
       })
       .catch((err) => {
         console.error("Signup failed:", err.message); // Debugging line

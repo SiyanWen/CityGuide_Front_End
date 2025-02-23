@@ -24,6 +24,7 @@ const ResponsiveAppBar = ({
   setIsLoggedIn,
   setUsername,
 }) => {
+  console.log("ResponsiveAppBar isLoggedIn:",isLoggedIn);
   // from react-router-dom
   const navigate = useNavigate();
   const image = false;
@@ -33,11 +34,11 @@ const ResponsiveAppBar = ({
     logout()
       .then(() => {
         message.success("Logout Successful");
-        localStorage.removeItem("username");
-        localStorage.removeItem("isLoggedIn");
+        // localStorage.removeItem("username");
+        // localStorage.removeItem("isLoggedIn");
         setIsLoggedIn(false);
         setUsername(null); // Clear the username
-        navigate("/"); // Redirect to home page
+        navigate("/search"); // Redirect to home page
       })
       .catch((err) => {
         message.error("Logout failed: " + err.message);

@@ -79,7 +79,7 @@ function Landing({ onCityChange }) {
     console.log("Selected City Name:", selectedCityName);
     setCity({ id: selectedCityId, name: selectedCityName });
     onCityChange(selectedCityId, selectedCityName);
-    navigate("/cityguide/search");
+    navigate("/cityguide/mapping");
   };
   return (
     <>
