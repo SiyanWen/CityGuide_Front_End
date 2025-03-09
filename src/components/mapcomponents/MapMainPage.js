@@ -1,32 +1,45 @@
-import React, { useState, useEffect, useContext, createContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect} from "react";
+import {useNavigate} from "react-router-dom";
 import {
   APIProvider,
   Map,
   AdvancedMarker,
   Pin,
 } from "@vis.gl/react-google-maps";
+
 import { Fab } from "@mui/material";
 import { Home } from "@mui/icons-material";
 import { ThemeProvider } from "@mui/material/styles";
 
 import "../../styles/CustomMap.css";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import myTheme from "../../MyMuiTheme";
 import PlaceAutocomplete from "./AutocompleteString";
 import MapHandler from "./HandleMap";
 import SideWindow from "./SideWindow";
 // import SideWindowButton from "./SideWindowButton";
 
-const CustomMap = () => {
+const CustomMap = ({isLoggedIn,onPlace}) => {
   const API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
   const DEFAULT_CENTER = { lat: 47.608013, lng: -122.335167 };
   const DEFAULT_ZOOM = 12;
-
+  const navigate = useNavigate();
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState(null);
 
+  console.log("from map if place input:",onPlace);
+
+  // the prop come from search autocomplete
+  useEffect(()=>{
+    if (!onPlace) return
+    setSelectedPlace(onPlace);
+    setLoaded(true);
+    console.log("from map useEffect:",selectedPlace,loaded);
+  },[onPlace]);
+
+  // update dom if search button be clicked
   useEffect(() => {
     if (loaded  && selectedPlace && selectedPlace.geometry.location) {
       setPosition(selectedPlace.geometry.location);
@@ -75,10 +88,11 @@ const CustomMap = () => {
       <div className="map-container">
 
         <div className="floating-navigation">
+          <div className="autocomplete-container">
           <PlaceAutocomplete
             onPlaceSelect={setSelectedPlace}
             onPlace={selectedPlace}
-          />
+          /></div>
 
           <ThemeProvider theme={myTheme}>
             <div style={{ paddingLeft: "30px" }}>
@@ -101,10 +115,10 @@ const CustomMap = () => {
                 color="primary"
                 size="small"
                 style={{ boxShadow: "none", transform: "scale(0.95)" }}
-                onClick={()=>{window.location.href = "/cityguide/search";}}
+                onClick={()=>{navigate("/cityguide/myselection")}} 
               >
-                {/* <Link to="/cityguide/search"></Link> */}
-                <Home fontSize="small" />
+                
+                <ShoppingCartOutlinedIcon fontSize="small" />
               </Fab>
             </div>
           </ThemeProvider>
@@ -114,6 +128,7 @@ const CustomMap = () => {
 
         {/* <SharedDataContext.Provider value={{ totalSelection, setTotalSelection }}> */}
         <SideWindow
+          isLoggedIn={isLoggedIn}
           place={selectedPlace}
           open={open}
           onClose={clearSpot}

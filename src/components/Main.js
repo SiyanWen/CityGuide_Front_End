@@ -1,10 +1,11 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
-import { Routes, Route, Navigate, useNavigate} from "react-router-dom";
-
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { APIProvider } from "@vis.gl/react-google-maps";
 import Landing from "./Landing";
 import Search from "./Search";
 import Mapping from "./Mapping";
+import MySelectionPage from "./mapcomponents/MySelectionPage";
 import Survey from "./Survey";
 import Planning from "./Planning";
 import RouteCom from "./Route";
@@ -16,72 +17,133 @@ import UserInfo from "./UserInfo";
 import { TOKEN_KEY } from "../constants";
 
 function Main() {
-  const [isSignedIn, setIsSignedIn] = useState(true);
-  const handleSignedIn = (token) => {
-    if (token) {
-      localStorage.setItem(TOKEN_KEY, token);
-      setIsSignedIn(true);
-    }
-  };
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  console.log("Main isLoggedIn:", isLoggedIn);
+  // const handleSignedIn = (token) => {
+  //   if (token) {
+  //     localStorage.setItem(TOKEN_KEY, token);
+  //     setIsSignedIn(true);
+  //   }
+  // };
+  const [username, setUsername] = useState("");
   const [city, setCity] = useState({ id: "", name: "" });
   const [state, setState] = useState({ id: "", name: "" });
+  const [selectedPlace, setSelectedPlace] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(()=>{
-    if (city.name)
-    console.log("from main after",state);
-    console.log("from main after",city);
-    navigate("/cityguide/search");
-  },[city.name])
+  useEffect(() => {
+    // const storedStatus = localStorage.getItem("isLoggedIn");
+    const storedUsername = localStorage.getItem("username");
+    // setIsLoggedIn(storedStatus);
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
+
+  console.log("from main after", state);
+  console.log("from main after", city);
+  console.log("from main after", selectedPlace);
+
+  // useEffect(()=>{
+  //   if (city)
+  //   console.log("from main after",state);
+  //   console.log("from main after",city);
+  //   navigate("/cityguide/search");
+  // },[city])
 
   const showLanding = () => {
     return <Landing />;
   };
 
   const showSearch = () => {
-    return <Search onState={state} onCity={city} />;
+    return (
+      <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
+        <Search
+          isLoggedIn={isLoggedIn}
+          username={username}
+          setUsername={setUsername}
+          setIsLoggedIn={setIsLoggedIn}
+          onState={state}
+          onCity={city}
+          onPlaceSelect={setSelectedPlace}
+        />
+      </APIProvider>
+    );
   };
 
   const showMapping = () => {
     // return <Mapping />;
-    return isSignedIn ? <Mapping /> : <SignIn />;
+    console.log("showMapping isLoggedin:", isLoggedIn);
+    return isLoggedIn ? (
+      <Mapping
+        isLoggedIn={isLoggedIn}
+        setIsLoggedIn={setIsLoggedIn}
+        place={selectedPlace}
+      />
+    ) : (
+      <SignIn isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+    );
+  };
+  const showMySelection = () => {
+    return isLoggedIn ? (
+      <MySelectionPage />
+    ) : (
+      <SignIn isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+    );
   };
   const showSurvey = () => {
     // return <Survey />
-    return isSignedIn ? <Survey /> : <SignIn />;
+    console.log("showSurvey", isLoggedIn, setIsLoggedIn);
+    return isLoggedIn ? (
+      <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
+        <Survey />
+      </APIProvider>
+    ) : (
+      <SignIn isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+    );
   };
   const showPlanning = () => {
-    return isSignedIn ? <Planning /> : <SignIn />;
+    return isLoggedIn ? (
+      <Planning />
+    ) : (
+      <SignIn isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+    );
   };
   const showRoute = () => {
-    return isSignedIn ? <RouteCom /> : <SignIn />;
+    return isLoggedIn ? (
+      <RouteCom />
+    ) : (
+      <SignIn isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+    );
   };
   const showFinished = () => {
-    return isSignedIn ? <Finished /> : <SignIn />;
+    return isLoggedIn ? (
+      <Finished />
+    ) : (
+      <SignIn isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+    );
   };
 
   const showSignIn = () => {
-    // return isSignedIn ? (
+    // return isLoggedIn ? (
     //   <Navigate to="/cityguide/search" />
     // ) : (
     //   <SignIn handleSignedIn={handleSignedIn} />
     // );
-    return <SignIn handleSignedIn={handleSignedIn} />;
+    return <SignIn isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />;
   };
 
   const showSignUp = () => {
-    // return isSignedIn ? <Navigate to="/cityguide/search" /> : <SignUp />;
-    return <SignUp handleSignedIn={handleSignedIn} />;
+    // return isLoggedIn ? <Navigate to="/cityguide/search" /> : <SignUp />;
+    return <SignUp isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />;
   };
   const showMyGallery = () => {
-    return isSignedIn ? <MyGallery /> : <Navigate to="/cityguide/signin" />;
+    return isLoggedIn ? <MyGallery /> : <Navigate to="/cityguide/signin" />;
   };
   const showUserInfo = () => {
-    return isSignedIn ? <UserInfo /> : <Navigate to="/cityguide/signin" />;
+    return isLoggedIn ? <UserInfo /> : <Navigate to="/cityguide/signin" />;
   };
   //http://localhost:3000/cityguide
-
-
 
   // 父容器接收城市ID和名称的函数
   // const handleCitySelection = (cityId, cityName) => {
@@ -89,7 +151,7 @@ function Main() {
   //     setCity(prevState => ({ id: cityId, name: cityName }))
   //   },[cityId,cityName]);
 
-    // 在父容器中打印城市ID和城市名称
+  // 在父容器中打印城市ID和城市名称
   //   console.log("From main");
   //   console.log("Selected City ID:", cityId);
   //   console.log("Selected City Name:", cityName);
@@ -104,7 +166,6 @@ function Main() {
   //   console.log("Selected State Name:", stateName);
   //   console.log(state);
   // };
-    
 
   return (
     <div className="main">
@@ -121,6 +182,7 @@ function Main() {
         />
         <Route path="/cityguide/search" element={showSearch()} />
         <Route path="/cityguide/mapping" element={showMapping()} />
+        <Route path="/cityguide/myselection" element={showMySelection()} />
         <Route path="/cityguide/survey" element={showSurvey()} />
         <Route path="/cityguide/planning" element={showPlanning()} />
         <Route path="/cityguide/route" element={showRoute()} />

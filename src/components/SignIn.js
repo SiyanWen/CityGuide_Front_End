@@ -4,17 +4,17 @@ import { Link, useNavigate } from "react-router-dom";
 import ResponsiveAppBar from "./appbarcomponents/ResponsiveAppBar";
 import { login } from "../utils";
 
-const SignIn = () => {
+const SignIn = (props) => {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const {isLoggedIn, setIsLoggedIn} = props;
   const navigate = useNavigate();
 
   // check the status of login
   useEffect(() => {
-    const storedStatus = localStorage.getItem("isLoggedIn");
+    // const storedStatus = localStorage.getItem("isLoggedIn");
     const storedUsername = localStorage.getItem("username");
-    setIsLoggedIn(storedStatus);
+    // setIsLoggedIn(storedStatus);
     if (storedUsername) {
       setUsername(storedUsername);
     }
@@ -28,7 +28,7 @@ const SignIn = () => {
         message.success(`Login Successful`);
         console.log(data)
         localStorage.setItem("username", data.email);
-        localStorage.setItem("isLoggedIn", true);
+        // localStorage.setItem("isLoggedIn", true);
         setIsLoggedIn(true);
         setUsername(data.email);
         navigate("/cityguide/search");

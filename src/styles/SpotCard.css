@@ -1,19 +1,30 @@
 .card-container {
   position: relative;
+  display:flex;
+  direction: row;
+  justify-items: auto;
   top: 5px;
-  left: 10px;
-  background-color: aqua;
+  left: 0;
+  width:100%;
+  height:25%;
+  background-color: transparent;
   padding: 10px;
 }
 
 .photo-cotainer {
   position: relative;
-  background-color: aquamarine;
+  background-color: transparent;
+  display: flex;
+  align-items: start;
+}
+.photo-cotainer img {
+  max-width: 100px;  
+  max-height: 100px; 
 }
 
 .content-cotainer {
   position: relative;
-  background-color: pink;
+  background-color: transparent;
   text-align: left;
 }
 
@@ -26,16 +37,22 @@
 
 .button-cotainer-top {
   position: absolute;
-  width: 145px;
-  height: 70px;
-  top: 18px;
-  left: 306px;
-  background-color: blue;
+  width: auto;
+  height: auto;
+  top: 15px;
+  right:10px;
+  display: flex;
+  justify-content: flex-end;
+  background-color: transparent;
 }
 
 .button-cotainer-bottom {
   position: absolute;
-  left: 380px;
-  top: 100px;
-  background-color: greenyellow;
+  width: auto;
+  height: auto;
+  bottom: 15px;
+  right:10px;
+  background-color: transparent;
+  justify-content: flex-end;
+  background-color: transparent;
 }

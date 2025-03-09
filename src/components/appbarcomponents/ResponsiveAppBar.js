@@ -24,6 +24,7 @@ const ResponsiveAppBar = ({
   setIsLoggedIn,
   setUsername,
 }) => {
+  console.log("ResponsiveAppBar isLoggedIn:",isLoggedIn);
   // from react-router-dom
   const navigate = useNavigate();
   const image = false;
@@ -33,11 +34,11 @@ const ResponsiveAppBar = ({
     logout()
       .then(() => {
         message.success("Logout Successful");
-        localStorage.removeItem("username");
-        localStorage.removeItem("isLoggedIn");
+        // localStorage.removeItem("username");
+        // localStorage.removeItem("isLoggedIn");
         setIsLoggedIn(false);
         setUsername(null); // Clear the username
-        navigate("/"); // Redirect to home page
+        navigate("/cityguide/search"); // Redirect to home page
       })
       .catch((err) => {
         message.error("Logout failed: " + err.message);
@@ -104,7 +105,7 @@ const ResponsiveAppBar = ({
             noWrap
             component="a"
             // href点击之后转到的地址，如果只有‘/’表示去home page
-            href="/"
+            href="/cityguide/search"
             sx={{
               fontFamily: "monospace",
               fontWeight: 700,
@@ -144,7 +145,8 @@ const ResponsiveAppBar = ({
             gap: "10px", // 按钮或头像之间的间距
           }}
         >
-          {!isLoggedIn ? (
+          
+            {!isLoggedIn ?  ((secondElem!=="Sign In"&&secondElem!=="Sign Up") && (
             <>
               <Button
                 variant="contained"
@@ -169,7 +171,7 @@ const ResponsiveAppBar = ({
                 Register
               </Button>
             </>
-          ) : (
+          )) : (
             <Box sx={{ flexGrow: 1 }}>
               <IconButton
                 size="large"

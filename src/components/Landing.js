@@ -6,10 +6,13 @@ import {
   CountrySelect,
   StateSelect,
 } from "react-country-state-city";
+import {useNavigate} from "react-router-dom";
 import Search from "./Search.js";
 import "react-country-state-city/dist/react-country-state-city.css";
 
 function Landing({ onStateChange, onCityChange }) {
+  const navigate = useNavigate();
+
   const [showChild, setShowChild] = React.useState(true);
   // const options = [
   //   { value: "AL", label: "Alabama" },
@@ -66,7 +69,7 @@ function Landing({ onStateChange, onCityChange }) {
   // ];
 
   const [countryid, setCountryid] = useState(233);
-  const [load, setLoad] = useState(false);
+  // const [load, setLoad] = useState(false);
   // const [stateid, setstateid] = useState(0);
   const [state, setState] = useState({ id: "", name: "" });
   const [city, setCity] = useState({ id: "", name: "" });
@@ -89,6 +92,7 @@ function Landing({ onStateChange, onCityChange }) {
   useEffect(() => {
     if (city.name){
       onCityChange(city)
+      navigate("/cityguide/search");
     }
   }, [city.name, onCityChange]);
 
