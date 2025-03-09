@@ -2,8 +2,10 @@ import React,{useState, useEffect }from "react";
 import CustomMap from "./mapcomponents/MapMainPage.js";
 import "../styles/Landing.css";
 import ResponsiveAppBar from "./appbarcomponents/ResponsiveAppBar";
+import { Place } from "@mui/icons-material";
+
 function Mapping(props) {
-  const { isLoggedIn, setIsLoggedIn} = props;
+  const { isLoggedIn, setIsLoggedIn, place} = props;
   const [username, setUsername] = useState("");
   console.log("Mapping isLoggedIn:",isLoggedIn);
   // check the status of login
@@ -30,7 +32,7 @@ function Mapping(props) {
         secondElem={"Search"}
       />
       <div>
-        <CustomMap />
+        <CustomMap  isLoggedIn={isLoggedIn} onPlace={place}/>
       </div>
     </>
   );

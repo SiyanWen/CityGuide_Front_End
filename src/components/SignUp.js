@@ -71,7 +71,7 @@ const SignUp = (props) => {
         setIsLoggedIn(true);
         setUsername(data.username);
         message.success("Successfully signed up");
-        navigate("/cityguide/search");
+        navigate("/cityguide/signin");
       })
       .catch((err) => {
         console.error("Signup failed:", err.message); // Debugging line

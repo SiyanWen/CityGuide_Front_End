@@ -1,6 +1,8 @@
-.autocomplete-container{
-    width:fit-content;
-    height: fit-content;
-    padding: '10px';
+.autocomplete{
+    
+    /* width:50vw;
+    height: 30px; */
+    /* padding: '10px'; */
+    z-index: 1200;
     background-color:'transparent';
 }

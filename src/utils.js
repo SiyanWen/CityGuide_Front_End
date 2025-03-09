@@ -72,7 +72,7 @@ export const addToUserSpot = (spot) => {
     rating: spot.rating,
     rating_count: spot.user_ratings_total,
     cost: spot.price_level,
-    opening_hours: spot.opening_hours.weekday_text,
+    opening_hours: spot.opening_hours,
     cover_img_url: spot.photo_reference,
     review: spot.reviews,
     latitude: latitude(),

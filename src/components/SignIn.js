@@ -31,7 +31,7 @@ const SignIn = (props) => {
         // localStorage.setItem("isLoggedIn", true);
         setIsLoggedIn(true);
         setUsername(data.email);
-        navigate("/cityguide/mapping");
+        navigate("/cityguide/search");
       })
       .catch((err) => {
         message.error(err.message);

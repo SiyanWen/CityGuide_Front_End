@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
-import { useNavigate } from "react-router-dom";
 import "../styles/Landing.css";
 import {
   CitySelect,
   CountrySelect,
   StateSelect,
 } from "react-country-state-city";
+import {useNavigate} from "react-router-dom";
+import Search from "./Search.js";
 import "react-country-state-city/dist/react-country-state-city.css";
 
-function Landing({ onCityChange }) {
+function Landing({ onStateChange, onCityChange }) {
+  const navigate = useNavigate();
+
   const [showChild, setShowChild] = React.useState(true);
   // const options = [
   //   { value: "AL", label: "Alabama" },
@@ -66,21 +69,33 @@ function Landing({ onCityChange }) {
   // ];
 
   const [countryid, setCountryid] = useState(233);
+  // const [load, setLoad] = useState(false);
   // const [stateid, setstateid] = useState(0);
   const [state, setState] = useState({ id: "", name: "" });
   const [city, setCity] = useState({ id: "", name: "" });
-  const navigate = useNavigate();
+
+  // Directly update state with object
+  const handleStateChange = (e) => {
+    setState({ id: e.id, name: e.name }); 
+};
 
   const handleCityChange = (e) => {
-    const selectedCityId = e.id;
-    const selectedCityName = e.name;
-    console.log("from landing");
-    console.log("Selected City ID:", selectedCityId);
-    console.log("Selected City Name:", selectedCityName);
-    setCity({ id: selectedCityId, name: selectedCityName });
-    onCityChange(selectedCityId, selectedCityName);
-    navigate("/cityguide/mapping");
-  };
+    setCity({ id: e.id, name: e.name });
+};
+
+  useEffect(() => {
+    if (state.id) { 
+      onStateChange(state);
+    }
+  }, [state.id, onStateChange]);
+
+  useEffect(() => {
+    if (city.name){
+      onCityChange(city)
+      navigate("/cityguide/search");
+    }
+  }, [city.name, onCityChange]);
+
   return (
     <>
       {showChild && (
@@ -177,7 +192,7 @@ function Landing({ onCityChange }) {
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <StateSelect
                   countryid={countryid}
-                  onChange={(e) => setState({ ...state, id: e.id })}
+                  onChange={handleStateChange}
                   placeHolder="Select State"
                   style={{
                     cursor: "pointer",

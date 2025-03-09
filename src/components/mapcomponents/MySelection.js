@@ -9,16 +9,16 @@ import Button from "@mui/material/Button";
 import "../../styles/MySelection.css";
 
 import { getMySelection } from "../../utils";
-
 import { ThemeProvider } from "@mui/material/styles";
 import myTheme from "../../MyMuiTheme";
 
 import SpotCard from "./SpotCard";
 
 //spotsList={mySpots} onDeleted={onDeleted} spotcard
-const MySelection = ({ open, onClose }) => {
+const MySelection = ({ open, onClose,isLoggedIn }) => {
+  const navigate = useNavigate();
   const [spotsData, setSpotsData] = useState([]);
-
+  console.log("myselection",isLoggedIn)
   useEffect(() => {
     // getMySelection()
     //   .then((data) => {`
@@ -30,7 +30,7 @@ const MySelection = ({ open, onClose }) => {
   }, []);
 
   const handleLinkClick = () => {
-    window.location.href = "/cityguide/survey";
+    navigate("/cityguide/survey");
   };
 
   //spotsList={spotsData} in SpotCard

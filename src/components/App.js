@@ -75,7 +75,7 @@ import Main from "./Main";
 // import Plan from "./surveycomponents/Plan";
 // import Planning from "./Planning";
 // import Mapping from "./Mapping";
-
+import MySelectionPage from "./mapcomponents/MySelectionPage";
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   return (
@@ -84,6 +84,7 @@ function App() {
       {/* <Plan/> */}
       {/* <Mapping/> */}
       {/* <Planning/> */}
+      {/* <MySelectionPage/> */}
     </div>
   );
 }
