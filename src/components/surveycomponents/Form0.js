@@ -77,12 +77,16 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
     }
 }, [selectedValues, lastAddedSpotId]);
 
+  useEffect(() => {
+     if (!loading) return;
+  }, [loading, data]);
+
   const addItem = (e) => {
     e.preventDefault();
     setSpotItems((prevSpotItems) => {
       return [...prevSpotItems, { name: selectedPlace.name, id: Date.now()}];
     });
-
+    if (!loading) return;
     const request = {
       placeId: selectedPlace.place_id,
       fields: [
