@@ -23,7 +23,7 @@ const steps = [
   },
 ];
 
-const Plan = () => {
+const Plan = ({ spots }) => {
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
   const [days, setDays] = useState(1);
@@ -67,33 +67,33 @@ const Plan = () => {
     console.log(surveyInfo);
   }, [surveyInfo]);
 
-  const spots = [
-    {
-      name: "Seattle Aquarium ",
-      // originalGid:"xxxx",
-      // location: { lat: 47.607559279254026, lng: -122.34299870775699 },
-    },
-    {
-      name: "Space Needle",
-      // originalGid:"xxxx",
-      // location: { lat: 47.62009964037968, lng: -122.3490756210929 },
-    },
-    {
-      name: "University of Washington ",
-      // originalGid:"xxxx",
-      // location: { lat: 47.65686865308057, lng: -122.30661818625246 },
-    },
-    {
-      name: "Frye Art Museum ",
-      // originalGid:"xxxx",
-      // location: { lat: 47.60813784186174, lng: -122.32415216405876 },
-    },
-    {
-      name: "West Point Lighthouse",
-      // originalGid:"xxxx",
-      // location: { lat: 47.662946075385655, lng: -122.4358662863737 },
-    },
-  ];
+  // const spots = [
+  //   {
+  //     name: "Seattle Aquarium ",
+  //     // originalGid:"xxxx",
+  //     // location: { lat: 47.607559279254026, lng: -122.34299870775699 },
+  //   },
+  //   {
+  //     name: "Space Needle",
+  //     // originalGid:"xxxx",
+  //     // location: { lat: 47.62009964037968, lng: -122.3490756210929 },
+  //   },
+  //   {
+  //     name: "University of Washington ",
+  //     // originalGid:"xxxx",
+  //     // location: { lat: 47.65686865308057, lng: -122.30661818625246 },
+  //   },
+  //   {
+  //     name: "Frye Art Museum ",
+  //     // originalGid:"xxxx",
+  //     // location: { lat: 47.60813784186174, lng: -122.32415216405876 },
+  //   },
+  //   {
+  //     name: "West Point Lighthouse",
+  //     // originalGid:"xxxx",
+  //     // location: { lat: 47.662946075385655, lng: -122.4358662863737 },
+  //   },
+  // ];
   const [spotList, setSpotList] = useState(spots); //[]
 
   // useEffect(() => {

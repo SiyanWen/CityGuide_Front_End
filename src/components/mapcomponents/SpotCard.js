@@ -52,7 +52,7 @@ const SpotCard = ({ spots, newList }) => {
 
 const deleteSpot = (spotId) => {
     const updatedMySelection = mySelection.filter(
-      (spot) => spot.place_id !== spotId
+      (spot) => spot.id !== spotId
     );
     setMySelection(updatedMySelection);
     setUpdate(true); 
@@ -96,7 +96,10 @@ const deleteSpot = (spotId) => {
                     <CardMedia
                       component="img"
                       sx={{ width:100,height:100}}
-                      image={spot.photoUrl}
+                      image={`https://maps.googleapis.com/maps/api/place/photo`
+                        +`?maxwidth=400&photoreference=${spot.cover_img_url}`
+                        +`&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
+                      }
                       alt={spot.name}
                     />
                   </div>
@@ -176,7 +179,7 @@ const deleteSpot = (spotId) => {
                           color="secondary"
                           startIcon={<RemoveIcon fontSize="small" />}
                           onClick={() => {
-                            deleteSpot(spot.place_id);
+                            deleteSpot(spot.id);
                           }}
                           // handleRemove(spot.id) ???
                         />
