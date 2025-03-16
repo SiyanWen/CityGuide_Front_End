@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect, useState } from "react";
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
-import { addToUserSpot, modify_url,getMySelection } from "../../utils";
+import { addToUserSpot, modify_url, getMySelection } from "../../utils";
 import { PlusOutlined } from "@ant-design/icons";
 import { Form, Input, Select, Space, Divider, Button, message } from "antd";
 // import { addToUserSpot} from "../../utils";
@@ -18,6 +18,7 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
   const [openSelect, setOpenSelect] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null); //basic places' details
   const [lastAddedSpotId, setLastAddedSpotId] = useState(null); //store the id of the last added spot
+  const [ableToGetMySelection, setAbleToGetMySelection] = useState(false);
   // const onNameChange = (event) => {
   //   setName(event.target.value);
   // };
@@ -46,7 +47,7 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
     if (selectedPlace) {
       console.log("selectedPlace work!", selectedPlace, places);
     }
-  }, [selectedPlace,places]);
+  }, [selectedPlace, places]);
   useEffect(() => {
     if (places && selectedPlace) {
       const div = document.createElement("div");
@@ -71,21 +72,24 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
   };
 
   useEffect(() => {
-    if (lastAddedSpotId && Object.values(selectedValues).includes(lastAddedSpotId)) {
-        setOpenSelect(false); // close the select
-        setLastAddedSpotId(null); // reset the last added spot id
+    if (
+      lastAddedSpotId &&
+      Object.values(selectedValues).includes(lastAddedSpotId)
+    ) {
+      setOpenSelect(false); // close the select
+      setLastAddedSpotId(null); // reset the last added spot id
     }
-}, [selectedValues, lastAddedSpotId]);
-
-  useEffect(() => {
-     if (!loading) return;
-  }, [loading, data]);
+  }, [selectedValues, lastAddedSpotId]);
 
   const addItem = (e) => {
     e.preventDefault();
+    setLoading(true);
     setSpotItems((prevSpotItems) => {
-      return [...prevSpotItems, { name: selectedPlace.name, id: Date.now()}];
+      return [...prevSpotItems, { name: selectedPlace.name, id: Date.now() }];
     });
+  };
+
+  useEffect(() => {
     if (!loading) return;
     const request = {
       placeId: selectedPlace.place_id,
@@ -124,7 +128,7 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
         postDataBack();
       }
     });
-  };
+  }, [loading, data]);
 
   const postDataBack = () => {
     console.log("wait for data back");
@@ -136,27 +140,37 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
     console.log("Does it work here???");
     addToUserSpot(dataForm)
       .then(() => {
-        // setOpen(true);
+        setOpen(true);
         setSelectedPlace(null);
-      //   setSpotItems((prevSpotItems) => {
-      //     const newSpot = { name: selectedPlace.name, id: dataForm.place_id }; // add the correct id from database
-      //     setLastAddedSpotId(dataForm.place_id)
-      //     return prevSpotItems.map(spot => spot.name === newSpot.name ? newSpot : spot);
-      // })
+        //   setSpotItems((prevSpotItems) => {
+        //     const newSpot = { name: selectedPlace.name, id: dataForm.place_id }; // add the correct id from database
+        //     setLastAddedSpotId(dataForm.place_id)
+        //     return prevSpotItems.map(spot => spot.name === newSpot.name ? newSpot : spot);
+        // })
       })
       .catch((err) => message.error(err.message))
       .finally(() => {
-        getMySelection()
-          .then((data) => {
-            let cart = data.cart_spots;
-            setSpotItems((prev) => {
-              console.log("Previous spotsList:", prev);
-              console.log("New spotsList:", cart);
-              return cart;
-            }); 
-            setOpen(true);   
+        setLoading(false);
+        setAbleToGetMySelection(true);
       });
-  })};
+  };
+
+  useEffect(() => {
+    if (!ableToGetMySelection) return;
+    getMySelection()
+      .then((data1) => {
+        let cart = data1.cart_spots;
+        setSpotItems((prev) => {
+          console.log("Previous spotsList:", prev);
+          console.log("New spotsList:", cart);
+          return cart;
+        });
+      })
+      .catch((err) => message.error(err.message))
+      .finally(() => {
+        setAbleToGetMySelection(false);
+      });
+  }, [ableToGetMySelection]);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -164,7 +178,6 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
     }
     setOpen(false);
   };
-
 
   const handleNumChange = (value) => {
     setDaysNum(value);
@@ -191,7 +204,7 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
   useEffect(() => {
     console.log(selectedValues);
     updateStartEnd(selectedValues);
-  }, [selectedValues,updateStartEnd]);
+  }, [selectedValues, updateStartEnd]);
 
   useEffect(() => {
     console.log(spotItems);
@@ -238,7 +251,11 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
               placeholder={selectorHolder(i)}
               defaultValue={selectedValues[`selector${i}`]}
               open={openSelect}
-              onDropdownVisibleChange={(open)=>{if(open){setOpenSelect(true)}}}
+              onDropdownVisibleChange={(open) => {
+                if (open) {
+                  setOpenSelect(true);
+                }
+              }}
               // onClick={() => {
               //   handleSelectOpen();
               // }}
@@ -272,47 +289,47 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
                         alignItems:'flex-start'
                       }}
                     > */}
-                      {/* <AutoInput
+                    {/* <AutoInput
                       value={name}
                       changeValue={onNameChange}
                       onKeyDown={(e) => e.stopPropagation()}
                       setNewSpot={setNewSpot}
                     /> */}
-                      <APIProvider
-                        apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-                      >
-                        <div
-                          className="form0-autocomplete"
-                          style={{
-                            position: "absolute",
-                            left: "20px",
-                            bottom: "20px",
-                            width: "250px",
-                            height: "15px",
-                            border: "1px",
-                            outline: "auto",
-                            zIndex: "1050",
-                          }}
-                        >
-                          <PlaceAutocomplete
-                            onPlaceSelect={handlePlaceSelect}
-                            onPlace={selectedPlace}
-                          />
-                        </div>
-                      </APIProvider>
-                      <Button
-                        type="text"
-                        icon={<PlusOutlined />}
-                        onClick={addItem}
+                    <APIProvider
+                      apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+                    >
+                      <div
+                        className="form0-autocomplete"
                         style={{
-                          position: "relative",
-                          top: "0px",
-                          right: "-125px",
-                          zIndex: "1200",
+                          position: "absolute",
+                          left: "20px",
+                          bottom: "20px",
+                          width: "250px",
+                          height: "15px",
+                          border: "1px",
+                          outline: "auto",
+                          zIndex: "1050",
                         }}
                       >
-                        Add spot
-                      </Button>
+                        <PlaceAutocomplete
+                          onPlaceSelect={handlePlaceSelect}
+                          onPlace={selectedPlace}
+                        />
+                      </div>
+                    </APIProvider>
+                    <Button
+                      type="text"
+                      icon={<PlusOutlined />}
+                      onClick={addItem}
+                      style={{
+                        position: "relative",
+                        top: "0px",
+                        right: "-125px",
+                        zIndex: "1200",
+                      }}
+                    >
+                      Add spot
+                    </Button>
                     {/* </div> */}
                   </Space>
                   <Snackbar
