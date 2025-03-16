@@ -43,9 +43,18 @@ const PlaceAutocomplete = ({ onPlaceSelect, onPlace }) => {
       onPlaceSelect(place);
       console.log(JSON.stringify(placeAutocomplete.getPlace()));
       console.log(placeAutocomplete.getPlace());
-      
+      // event.stopPropagation();
+      // e.preventDefault(); 
     });
   }, [placeAutocomplete]);
+
+//   const handleKeyDown = (e) => {
+//     if (e.key === 'place_changed') {
+//         e.preventDefault();  // Prevent new line in textarea
+//         e.stopPropagation(); // Stop event propagation to parent form
+//         console.log("enter key pressed in child")
+//     }
+// };onKeyDown={handleKeyDown}
 
   useEffect(() => {
     if (!onPlace) {
@@ -59,6 +68,7 @@ const PlaceAutocomplete = ({ onPlaceSelect, onPlace }) => {
     <div className="autocomplete">
       <input
         ref={inputRef}
+        
         // style={{ width: "800px", minWidth: "500px", height: "30px" }}
         style={{width:"100%", height:"100%", padding: "0px",border: "none", outline: "none",boxSizing: "border-box",zIndex:'1200'}}
       />

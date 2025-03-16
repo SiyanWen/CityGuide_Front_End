@@ -15,7 +15,7 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
   const [numSelectors, setNumSelectors] = useState();
   const [selectedValues, setSelectedValues] = useState({}); // store selected values
   const [spotItems, setSpotItems] = useState(spotList);
-  const [openSelect, setOpenSelect] = useState(false);
+  const [openSelects, setOpenSelects] = useState([]);
   const [selectedPlace, setSelectedPlace] = useState(null); //basic places' details
   const [lastAddedSpotId, setLastAddedSpotId] = useState(null); //store the id of the last added spot
   const [ableToGetMySelection, setAbleToGetMySelection] = useState(false);
@@ -63,25 +63,26 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
     }
   }, [places, selectedPlace]);
 
-  const handleSelectOpen = () => {
-    setOpenSelect(true);
-  };
+  // const handleSelectOpen = () => {
+  //   setOpenSelect(true);
+  // };
 
-  const handleSelectClose = () => {
-    setOpenSelect(false);
-  };
+  // const handleSelectClose = () => {
+  //   setOpenSelect(false);
+  // };
 
   useEffect(() => {
     if (
       lastAddedSpotId &&
       Object.values(selectedValues).includes(lastAddedSpotId)
     ) {
-      setOpenSelect(false); // close the select
+      // setOpenSelects(false); // close the select
       setLastAddedSpotId(null); // reset the last added spot id
     }
   }, [selectedValues, lastAddedSpotId]);
 
   const addItem = (e) => {
+    console.log(e);
     e.preventDefault();
     setLoading(true);
     setSpotItems((prevSpotItems) => {
@@ -192,13 +193,29 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
           {}
         ), // Initialize new selectors
     }));
+    console.log("*SelecteValue:", selectedValues);
+    setOpenSelects([...Array(value)].map(() => false));
+    console.log("*OpenSelectes:", openSelects);
   };
 
-  const handleSelectChange = (value, key) => {
+  useEffect(()=>{
+    if(openSelects){
+    
+      console.log("OpenSelects:", openSelects);
+    }
+  },[openSelects])
+
+  const handleSelectChange = (value, key, index) => {
     setSelectedValues((prevState) => ({
       ...prevState,
       [key]: value,
     }));
+    
+    setOpenSelects((prev) => {
+      const newOpenSelects = [...prev];
+      newOpenSelects[index] = false; // Close dropdown after selection
+      return newOpenSelects;
+    });
   };
 
   useEffect(() => {
@@ -250,17 +267,21 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
               key={`selector${i}`}
               placeholder={selectorHolder(i)}
               defaultValue={selectedValues[`selector${i}`]}
-              open={openSelect}
-              onDropdownVisibleChange={(open) => {
-                if (open) {
-                  setOpenSelect(true);
+              open={openSelects[i]}
+              onDropdownVisibleChange={(open1) => {
+                if(open1){
+                  setOpenSelects((prev) => {
+                    const newOpenSelects = [...prev];
+                    newOpenSelects[i] = open1;  // <-- Only modify the i-th item
+                    return newOpenSelects;
+                  });
                 }
               }}
               // onClick={() => {
               //   handleSelectOpen();
               // }}
               // onClose={()=>{handleSelectClose()}}
-              onChange={(value) => handleSelectChange(value, `selector${i}`)}
+              onChange={(value) => handleSelectChange(value, `selector${i}`,i)}
               style={{ width: 400, marginRight: 10, zIndex: 1 }}
               dropdownRender={(menu) => (
                 <>
@@ -295,6 +316,7 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
                       onKeyDown={(e) => e.stopPropagation()}
                       setNewSpot={setNewSpot}
                     /> */}
+
                     <APIProvider
                       apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
                     >
@@ -317,6 +339,7 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
                         />
                       </div>
                     </APIProvider>
+
                     <Button
                       type="text"
                       icon={<PlusOutlined />}
