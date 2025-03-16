@@ -131,11 +131,11 @@ const List = [
   },
 ];
 
-const MySelectionPage = () => {
+const MySelectionPage = ({spotsList, setSpotsList}) => {
   const DEFAULT_CENTER = { lat: 47.608013, lng: -122.335167 };
   const DEFAULT_ZOOM = 12;
   const navigate = useNavigate();
-  const [spotsList, setSpotsList] = useState(null);
+  // const [spotsList, setSpotsList] = useState(null);
   const [load, setLoad] = useState(false);
   let cart;
 
@@ -196,7 +196,7 @@ const MySelectionPage = () => {
 
   const handleLinkClick = () => {
     navigate("/cityguide/survey");
-    // return (<Survey spotList={spotsList}/>);
+    // return <Survey spotList={spotsList}/>;
   };
 
   return (

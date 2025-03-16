@@ -29,6 +29,7 @@ function Main() {
   const [city, setCity] = useState({ id: "", name: "" });
   const [state, setState] = useState({ id: "", name: "" });
   const [selectedPlace, setSelectedPlace] = useState(null);
+  const [spotsList, setSpotsList] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -86,7 +87,7 @@ function Main() {
   };
   const showMySelection = () => {
     return isLoggedIn ? (
-      <MySelectionPage />
+      <MySelectionPage spotsList={spotsList} setSpotsList={setSpotsList} />
     ) : (
       <SignIn isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
     );
@@ -96,7 +97,7 @@ function Main() {
     console.log("showSurvey", isLoggedIn, setIsLoggedIn);
     return isLoggedIn ? (
       <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
-        <Survey />
+        <Survey spotList={spotsList} />
       </APIProvider>
     ) : (
       <SignIn isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
