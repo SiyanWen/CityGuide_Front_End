@@ -131,13 +131,19 @@ export const removeSpotFromMySelection = (spotId) => {
 };
 
 export const getMySelection = () => {
-  return fetch("/cart").then((response) => {
-    if (response.status < 200 || response.status >= 300) {
-      throw Error("Fail to get MySelection");
-    }
-
-    return response.json();
-  });
+  return fetch("/cart")
+    .then(async (response) => {
+      if (response.status < 200 || response.status >= 300) {
+        throw Error("Fail to get MySelection");
+      }
+      const data = await response.json(); // Wait for JSON data
+      console.log("getMySelection response data:", data); // Check if data is correct
+      return data; // Return the actual data
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+      throw error;
+    });
 };
 
 

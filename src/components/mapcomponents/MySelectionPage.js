@@ -16,7 +16,7 @@ import Box from "@mui/joy/Box";
 import { getMySelection } from "../../utils";
 import myTheme from "../../MyMuiTheme";
 import { ThemeProvider } from "@mui/material/styles";
-
+import Survey from "../Survey";
 
 const { Content, Sider } = Layout;
 const siderStyle = {
@@ -28,14 +28,14 @@ const siderStyle = {
   bottom: 0,
   scrollbarWidth: "thin",
   scrollbarGutter: "stable",
-  backgroundColor: 'white',
+  backgroundColor: "white",
 };
-const contentStyle={
-    height:'100%',
-    position: "sticky",
-    insetInlineStart: 0,
-    top: 0,
-    bottom: 0,
+const contentStyle = {
+  height: "100%",
+  position: "sticky",
+  insetInlineStart: 0,
+  top: 0,
+  bottom: 0,
 };
 
 const List = [
@@ -136,71 +136,113 @@ const MySelectionPage = () => {
   const DEFAULT_ZOOM = 12;
   const navigate = useNavigate();
   const [spotsList, setSpotsList] = useState(null);
+  const [load, setLoad] = useState(false);
+  let cart;
 
   useEffect(() => {
-    setSpotsList(List);
+    if (load) {
+      setSpotsList(cart);
+      console.log("spotsList:", spotsList);
+    }
+  }, [load]);
+
+  useEffect(() => {
+    console.log("useEffect is running, load:", load);
+
+    getMySelection()
+      .then((data) => {
+        console.log("getMySelection resolved with data:", data);
+
+        if (!data || !Array.isArray(data.cart_spots)) {
+          console.error(
+            "Invalid data format! cart_spots is missing or not an array.",
+            data
+          );
+          return;
+        }
+        cart = data.cart_spots;
+        console.log("Cart:", cart);
+        setSpotsList((prev) => {
+          console.log("Previous spotsList:", prev);
+          console.log("New spotsList:", cart);
+          return cart;
+        });
+        
+        setTimeout(() => {
+          console.log("In useEffect spotsList:", spotsList);
+          // setLoad(true);
+        }, 1600);
+      
+      })
+      .catch((err) => {
+        message.error(err.message);
+      });
   }, []);
 
   useEffect(() => {
-    // getMySelection()
-    //   .then((data) => {`
-    //     setSpotsData(data);
-    //   })
-    // .catch((err) => {
-    //   (err) => message.error(err.message)
-    // })
-  }, []);
+    console.log("spotsList updated:", spotsList); // Check the updated value here
+  }, [spotsList]);
+
+  //   getMySelection()
+  //   .then((data) => {
+  //     console.log("get data",data);
+  //     setTimeout(()=>{setSpotsList(data);},1500)
+  //     console.log("spotsList",spotsList);
+  //   })
+  // .catch(
+  //   (err) => {message.error(err.message);}
+  // ).finally(()=>setLoad(false))
+  // }
 
   const handleLinkClick = () => {
-    navigate("/cityguide/survey");
+    // navigate("/cityguide/survey");
+    return (<Survey spotList={spotsList}/>);
   };
 
   return (
     <Layout>
-      
-        <Content width='70%'style={contentStyle}>
-          <APIProvider
-            solutionChannel="GMP_devsite_samples_v3_rgmbasicmap"
-            apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-            version="beta"
+      <Content width="70%" style={contentStyle}>
+        <APIProvider
+          solutionChannel="GMP_devsite_samples_v3_rgmbasicmap"
+          apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+          version="beta"
+        >
+          <div
+            className="map"
+            style={{
+              width: "100%",
+              height: "100vh",
+              zIndex: 0,
+            }}
           >
-            <div
-              className="map"
-              style={{
-                width: "100%",
-                height: "100vh",
-                zIndex: 0,
-              }}
+            <Map
+              id="gmap"
+              mapId={process.env.REACT_APP_MAP_ID}
+              defaultCenter={DEFAULT_CENTER}
+              defaultZoom={DEFAULT_ZOOM}
+              gestureHandling={"greedy"}
+              disableDefaultUI={true}
             >
-              <Map
-                id="gmap"
-                mapId={process.env.REACT_APP_MAP_ID}
-                defaultCenter={DEFAULT_CENTER}
-                defaultZoom={DEFAULT_ZOOM}
-                gestureHandling={"greedy"}
-                disableDefaultUI={true}
-              >
-                {spotsList &&
-                  spotsList.map((spots, index) => {
-                    return (
-                      <AdvancedMarker
-                        key={spots.place_id}
-                        position={spots.geometry.location}
-                        scale={0.05}
-                      >
-                        <Pin
-                          background={"#26433e"}
-                          glyphColor={"#94d2bd"}
-                          borderColor={"#26433e"}
-                        />
-                      </AdvancedMarker>
-                    );
-                  })}
-              </Map>
-            </div>
-          </APIProvider>
-        </Content>
-      
+              {spotsList &&
+                spotsList.map((spot, index) => {
+                  return (
+                    <AdvancedMarker
+                      key={spot.original_gid}
+                      position={{ lat: spot.latitude, lng: spot.longitude }}
+                      scale={0.05}
+                    >
+                      <Pin
+                        background={"#26433e"}
+                        glyphColor={"#94d2bd"}
+                        borderColor={"#26433e"}
+                      />
+                    </AdvancedMarker>
+                  );
+                })}
+            </Map>
+          </div>
+        </APIProvider>
+      </Content>
 
       <Sider width="30%" style={siderStyle}>
         <ThemeProvider theme={myTheme}>

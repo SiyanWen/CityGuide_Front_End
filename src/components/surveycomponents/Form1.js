@@ -11,29 +11,35 @@ const Form1 = ({ days, updateSpotsPerDay, updateTraffic }) => {
     const [spotPerday, setSpotPerDay] = useState();
     // const [trafficPerDay, setTrafficPerDay] = useState({});
   
-    const handleSelectChange = (value, key) => {
-      updateTraffic((prevState) => ({
-        ...prevState,
-        [key]: value,
-      }));
+    // const handleSelectChange = (value, key) => {
+    //   updateTraffic((prevState) => ({
+    //     ...prevState,
+    //     [key]: value,
+    //   }));
+    // };
+
+    const handleSelectChange = (value) => {
+      updateTraffic(value);
     };
   
     const generateTrafficPreferences = () => {
       const dayInputs = [];
-      for (let i = 1; i <= days; i++) {
+      //if for every day: i<=days
+      //placeholder={`Day ${i}`}
+      //onChange={(value) => handleSelectChange(value, `Day ${i}`)}
+      for (let i = 1; i <= 1; i++) {
         dayInputs.push(
           <Select
-            placeholder={`Day ${i}`}
+            placeholder={'Transportation Select'}
             key={i}
             style={{ width: "100%" }}
-            onChange={(value) => handleSelectChange(value, `Day ${i}`)}
+            onChange={(value) => handleSelectChange(value)}
           >
             <Option value="drives">drives</Option>
             <Option value="public">public</Option>
             <Option value="bicycle">bicycle</Option>
             <Option value="walk">walk</Option>
-            {/* <Option value="high">High</Option> */}
-            {/* rives public bicycle walk */}
+            {/* drives public bicycle walk */}
           </Select>
         );
       }

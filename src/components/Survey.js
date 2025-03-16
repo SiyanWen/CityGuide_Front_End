@@ -5,7 +5,7 @@ import ResponsiveAppBar from "./appbarcomponents/ResponsiveAppBar";
 import Plan from "./surveycomponents/Plan";
 import Box from "@mui/material/Box";
 
-function Survey() {
+function Survey({spotList}) {
   const [username, setUsername] = useState(localStorage.getItem("username"));
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("isLoggedIn"));
 
@@ -32,7 +32,7 @@ function Survey() {
         <Link to="/cityguide/planning">planning</Link>
       </Box> */}
 
-      <Plan/>
+      <Plan spots={spotList}/>
     </>
   );
 }

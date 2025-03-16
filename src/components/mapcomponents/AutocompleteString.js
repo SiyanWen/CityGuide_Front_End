@@ -28,7 +28,8 @@ const PlaceAutocomplete = ({ onPlaceSelect, onPlace }) => {
         // "photos"
       ],
     };
-
+    //places.Autocomplete(inputRef.current, options).setBound(google.maps.LatLngBounds)
+    //or .setComponentRestrictions({country:'us'})
     setPlaceAutocomplete(new places.Autocomplete(inputRef.current, options));
     console.log("place autocomplete",placeAutocomplete);
   }, [places]);

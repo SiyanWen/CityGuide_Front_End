@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect, useState } from "react";
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
-import { addToUserSpot, modify_url } from "../../utils";
+import { addToUserSpot, modify_url,getMySelection } from "../../utils";
 import { PlusOutlined } from "@ant-design/icons";
 import { Form, Input, Select, Space, Divider, Button, message } from "antd";
 // import { addToUserSpot} from "../../utils";
@@ -13,13 +13,11 @@ import { APIProvider } from "@vis.gl/react-google-maps";
 const Form0 = ({ setDays, spotList, updateStartEnd }) => {
   const [daysNum, setDaysNum] = useState();
   const [numSelectors, setNumSelectors] = useState();
-  const [selectedValues, setSelectedValues] = useState({}); // Store selected values
+  const [selectedValues, setSelectedValues] = useState({}); // store selected values
   const [spotItems, setSpotItems] = useState(spotList);
-  // const [newSpot, setNewSpot] = useState(null);
-  // const [load, setLoad] = useState(false);
   const [openSelect, setOpenSelect] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null); //basic places' details
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [lastAddedSpotId, setLastAddedSpotId] = useState(null); //store the id of the last added spot
   // const onNameChange = (event) => {
   //   setName(event.target.value);
   // };
@@ -48,7 +46,7 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
     if (selectedPlace) {
       console.log("selectedPlace work!", selectedPlace, places);
     }
-  }, [selectedPlace]);
+  }, [selectedPlace,places]);
   useEffect(() => {
     if (places && selectedPlace) {
       const div = document.createElement("div");
@@ -68,19 +66,22 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
     setOpenSelect(true);
   };
 
-  const addItem = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setSpotItems((prevSpotItems) => {
-      return [...prevSpotItems, { name: selectedPlace.name }];
-    });
-    setTimeout(() => {
-      setOpenSelect(false);
-    }, 500);
+  const handleSelectClose = () => {
+    setOpenSelect(false);
   };
 
   useEffect(() => {
-    if (!loading) return;
+    if (lastAddedSpotId && Object.values(selectedValues).includes(lastAddedSpotId)) {
+        setOpenSelect(false); // close the select
+        setLastAddedSpotId(null); // reset the last added spot id
+    }
+}, [selectedValues, lastAddedSpotId]);
+
+  const addItem = (e) => {
+    e.preventDefault();
+    setSpotItems((prevSpotItems) => {
+      return [...prevSpotItems, { name: selectedPlace.name, id: Date.now()}];
+    });
 
     const request = {
       placeId: selectedPlace.place_id,
@@ -119,7 +120,7 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
         postDataBack();
       }
     });
-  }, [loading, data]);
+  };
 
   const postDataBack = () => {
     console.log("wait for data back");
@@ -131,14 +132,27 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
     console.log("Does it work here???");
     addToUserSpot(dataForm)
       .then(() => {
-        setOpen(true);
+        // setOpen(true);
         setSelectedPlace(null);
+      //   setSpotItems((prevSpotItems) => {
+      //     const newSpot = { name: selectedPlace.name, id: dataForm.place_id }; // add the correct id from database
+      //     setLastAddedSpotId(dataForm.place_id)
+      //     return prevSpotItems.map(spot => spot.name === newSpot.name ? newSpot : spot);
+      // })
       })
       .catch((err) => message.error(err.message))
       .finally(() => {
-        setLoading(false);
+        getMySelection()
+          .then((data) => {
+            let cart = data.cart_spots;
+            setSpotItems((prev) => {
+              console.log("Previous spotsList:", prev);
+              console.log("New spotsList:", cart);
+              return cart;
+            }); 
+            setOpen(true);   
       });
-  };
+  })};
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -147,12 +161,6 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
     setOpen(false);
   };
 
-  const handleSelectClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpenSelect(false);
-  };
 
   const handleNumChange = (value) => {
     setDaysNum(value);
@@ -179,7 +187,7 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
   useEffect(() => {
     console.log(selectedValues);
     updateStartEnd(selectedValues);
-  }, [selectedValues]);
+  }, [selectedValues,updateStartEnd]);
 
   useEffect(() => {
     console.log(spotItems);
@@ -222,11 +230,11 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
           .fill()
           .map((_, i) => (
             <Select
-              // open={openSelect}
-              // onDropdownVisibleChange={(open)=>setOpenSelect(false)}
               key={`selector${i}`}
               placeholder={selectorHolder(i)}
               defaultValue={selectedValues[`selector${i}`]}
+              open={openSelect}
+              onDropdownVisibleChange={(open)=>{if(open){setOpenSelect(true)}}}
               // onClick={() => {
               //   handleSelectOpen();
               // }}
@@ -322,7 +330,7 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
               )}
               options={spotItems.map((item) => ({
                 label: item.name,
-                value: item.name, //if the object contains id, value:item.originalGid
+                value: item.id, //if the object contains id, value:item.originalGid
               }))}
             />
           ))}
