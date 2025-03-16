@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect, useState } from "react";
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
-import { addToUserSpot, modify_url,getMySelection } from "../../utils";
+import { addToUserSpot, modify_url, getMySelection } from "../../utils";
 import { PlusOutlined } from "@ant-design/icons";
 import { Form, Input, Select, Space, Divider, Button, message } from "antd";
 // import { addToUserSpot} from "../../utils";
@@ -46,7 +46,7 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
     if (selectedPlace) {
       console.log("selectedPlace work!", selectedPlace, places);
     }
-  }, [selectedPlace,places]);
+  }, [selectedPlace, places]);
   useEffect(() => {
     if (places && selectedPlace) {
       const div = document.createElement("div");
@@ -71,18 +71,25 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
   };
 
   useEffect(() => {
-    if (lastAddedSpotId && Object.values(selectedValues).includes(lastAddedSpotId)) {
-        setOpenSelect(false); // close the select
-        setLastAddedSpotId(null); // reset the last added spot id
+    if (
+      lastAddedSpotId &&
+      Object.values(selectedValues).includes(lastAddedSpotId)
+    ) {
+      setOpenSelect(false); // close the select
+      setLastAddedSpotId(null); // reset the last added spot id
     }
-}, [selectedValues, lastAddedSpotId]);
+  }, [selectedValues, lastAddedSpotId]);
 
   const addItem = (e) => {
     e.preventDefault();
+    setLoading(true);
     setSpotItems((prevSpotItems) => {
-      return [...prevSpotItems, { name: selectedPlace.name, id: Date.now()}];
+      return [...prevSpotItems, { name: selectedPlace.name, id: Date.now() }];
     });
+  };
 
+  useEffect(() => {
+    if (!loading) return;
     const request = {
       placeId: selectedPlace.place_id,
       fields: [
@@ -120,7 +127,7 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
         postDataBack();
       }
     });
-  };
+  }, [loading, data]);
 
   const postDataBack = () => {
     console.log("wait for data back");
@@ -134,131 +141,134 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
       .then(() => {
         // setOpen(true);
         setSelectedPlace(null);
-      //   setSpotItems((prevSpotItems) => {
-      //     const newSpot = { name: selectedPlace.name, id: dataForm.place_id }; // add the correct id from database
-      //     setLastAddedSpotId(dataForm.place_id)
-      //     return prevSpotItems.map(spot => spot.name === newSpot.name ? newSpot : spot);
-      // })
+        //   setSpotItems((prevSpotItems) => {
+        //     const newSpot = { name: selectedPlace.name, id: dataForm.place_id }; // add the correct id from database
+        //     setLastAddedSpotId(dataForm.place_id)
+        //     return prevSpotItems.map(spot => spot.name === newSpot.name ? newSpot : spot);
+        // })
       })
       .catch((err) => message.error(err.message))
       .finally(() => {
-        getMySelection()
-          .then((data) => {
-            let cart = data.cart_spots;
-            setSpotItems((prev) => {
-              console.log("Previous spotsList:", prev);
-              console.log("New spotsList:", cart);
-              return cart;
-            }); 
-            setOpen(true);   
+        setLoading(false)
+        getMySelection().then((data) => {
+          let cart = data.cart_spots;
+          setSpotItems((prev) => {
+            console.log("Previous spotsList:", prev);
+            console.log("New spotsList:", cart);
+            return cart;
+          });
+          setOpen(true);
+        });
       });
-  })};
 
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpen(false);
-  };
+    const handleClose = (event, reason) => {
+      if (reason === "clickaway") {
+        return;
+      }
+      setOpen(false);
+    };
 
-
-  const handleNumChange = (value) => {
-    setDaysNum(value);
-    value = value + 1;
-    setNumSelectors(value);
-    setSelectedValues((prevState) => ({
-      ...prevState, // Keep existing selected values
-      ...Array(value)
-        .fill()
-        .reduce(
-          (acc, _, i) => ({ ...acc, [`selector${i + 1}`]: undefined }),
-          {}
-        ), // Initialize new selectors
-    }));
-  };
-
-  const handleSelectChange = (value, key) => {
-    setSelectedValues((prevState) => ({
-      ...prevState,
-      [key]: value,
-    }));
-  };
-
-  useEffect(() => {
-    console.log(selectedValues);
-    updateStartEnd(selectedValues);
-  }, [selectedValues,updateStartEnd]);
-
-  useEffect(() => {
-    console.log(spotItems);
-  }, [spotItems]);
-
-  const selectorHolder = (i) => {
-    if (i === 0) {
-      return "Day 1 Start Spot";
-    } else {
-      return `Day ${i} End Spot`;
-    }
-  };
-
-  const handlePlaceSelect = (place) => {
-    //This is where you handle your propagation
-    setSelectedPlace(place);
-  };
-
-  return (
-    <Form layout="vertical">
-      <Form.Item
-        label="How many days do you plan to travel?"
-        layout="horizontal"
-      >
-        <Input
-          placeholder="Type in days (1-7)"
-          type="number"
-          min={1}
-          max={7} // Limit to 15 days
-          value={daysNum}
-          onChange={(e) => {
-            setDays(Number(e.target.value));
-            handleNumChange(Number(e.target.value));
-          }} // Update days state in parent
-        />
-      </Form.Item>
-
-      <Form.Item label="Select start and end point">
-        {Array(numSelectors)
+    const handleNumChange = (value) => {
+      setDaysNum(value);
+      value = value + 1;
+      setNumSelectors(value);
+      setSelectedValues((prevState) => ({
+        ...prevState, // Keep existing selected values
+        ...Array(value)
           .fill()
-          .map((_, i) => (
-            <Select
-              key={`selector${i}`}
-              placeholder={selectorHolder(i)}
-              defaultValue={selectedValues[`selector${i}`]}
-              open={openSelect}
-              onDropdownVisibleChange={(open)=>{if(open){setOpenSelect(true)}}}
-              // onClick={() => {
-              //   handleSelectOpen();
-              // }}
-              // onClose={()=>{handleSelectClose()}}
-              onChange={(value) => handleSelectChange(value, `selector${i}`)}
-              style={{ width: 400, marginRight: 10, zIndex: 1 }}
-              dropdownRender={(menu) => (
-                <>
-                  {menu}
-                  <Divider
-                    style={{
-                      margin: "8px 0",
-                    }}
-                  />
-                  <Space
-                    style={{
-                      // height: 300,
-                      padding: "0 8px 4px",
-                      // display: "flex",
-                      // direction: "column",
-                      // alignItems:'flex-start'
-                    }}
-                  >
-                    {/* <div
+          .reduce(
+            (acc, _, i) => ({ ...acc, [`selector${i + 1}`]: undefined }),
+            {}
+          ), // Initialize new selectors
+      }));
+    };
+
+    const handleSelectChange = (value, key) => {
+      setSelectedValues((prevState) => ({
+        ...prevState,
+        [key]: value,
+      }));
+    };
+
+    useEffect(() => {
+      console.log(selectedValues);
+      updateStartEnd(selectedValues);
+    }, [selectedValues, updateStartEnd]);
+
+    useEffect(() => {
+      console.log(spotItems);
+    }, [spotItems]);
+
+    const selectorHolder = (i) => {
+      if (i === 0) {
+        return "Day 1 Start Spot";
+      } else {
+        return `Day ${i} End Spot`;
+      }
+    };
+
+    const handlePlaceSelect = (place) => {
+      //This is where you handle your propagation
+      setSelectedPlace(place);
+    };
+
+    return (
+      <Form layout="vertical">
+        <Form.Item
+          label="How many days do you plan to travel?"
+          layout="horizontal"
+        >
+          <Input
+            placeholder="Type in days (1-7)"
+            type="number"
+            min={1}
+            max={7} // Limit to 15 days
+            value={daysNum}
+            onChange={(e) => {
+              setDays(Number(e.target.value));
+              handleNumChange(Number(e.target.value));
+            }} // Update days state in parent
+          />
+        </Form.Item>
+
+        <Form.Item label="Select start and end point">
+          {Array(numSelectors)
+            .fill()
+            .map((_, i) => (
+              <Select
+                key={`selector${i}`}
+                placeholder={selectorHolder(i)}
+                defaultValue={selectedValues[`selector${i}`]}
+                open={openSelect}
+                onDropdownVisibleChange={(open) => {
+                  if (open) {
+                    setOpenSelect(true);
+                  }
+                }}
+                // onClick={() => {
+                //   handleSelectOpen();
+                // }}
+                // onClose={()=>{handleSelectClose()}}
+                onChange={(value) => handleSelectChange(value, `selector${i}`)}
+                style={{ width: 400, marginRight: 10, zIndex: 1 }}
+                dropdownRender={(menu) => (
+                  <>
+                    {menu}
+                    <Divider
+                      style={{
+                        margin: "8px 0",
+                      }}
+                    />
+                    <Space
+                      style={{
+                        // height: 300,
+                        padding: "0 8px 4px",
+                        // display: "flex",
+                        // direction: "column",
+                        // alignItems:'flex-start'
+                      }}
+                    >
+                      {/* <div
                       style={{
                         position: "relative",
                         top:0,
@@ -309,34 +319,34 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
                       >
                         Add spot
                       </Button>
-                    {/* </div> */}
-                  </Space>
-                  <Snackbar
-                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
-                    open={open}
-                    autoHideDuration={3000}
-                    onClose={handleClose}
-                  >
-                    <Alert
+                      {/* </div> */}
+                    </Space>
+                    <Snackbar
+                      anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                      open={open}
+                      autoHideDuration={3000}
                       onClose={handleClose}
-                      severity="success"
-                      variant="filled"
-                      sx={{ width: "100%" }}
                     >
-                      Add success!
-                    </Alert>
-                  </Snackbar>
-                </>
-              )}
-              options={spotItems.map((item) => ({
-                label: item.name,
-                value: item.id, //if the object contains id, value:item.originalGid
-              }))}
-            />
-          ))}
-      </Form.Item>
-    </Form>
-  );
+                      <Alert
+                        onClose={handleClose}
+                        severity="success"
+                        variant="filled"
+                        sx={{ width: "100%" }}
+                      >
+                        Add success!
+                      </Alert>
+                    </Snackbar>
+                  </>
+                )}
+                options={spotItems.map((item) => ({
+                  label: item.name,
+                  value: item.id, //if the object contains id, value:item.originalGid
+                }))}
+              />
+            ))}
+        </Form.Item>
+      </Form>
+    );
+  };
 };
-
 export default Form0;

@@ -195,8 +195,8 @@ const MySelectionPage = () => {
   // }
 
   const handleLinkClick = () => {
-    // navigate("/cityguide/survey");
-    return (<Survey spotList={spotsList}/>);
+    navigate("/cityguide/survey");
+    // return (<Survey spotList={spotsList}/>);
   };
 
   return (

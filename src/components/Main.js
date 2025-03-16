@@ -91,17 +91,17 @@ function Main() {
       <SignIn isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
     );
   };
-  // const showSurvey = () => {
-  //   // return <Survey />
-  //   console.log("showSurvey", isLoggedIn, setIsLoggedIn);
-  //   return isLoggedIn ? (
-  //     <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
-  //       <Survey />
-  //     </APIProvider>
-  //   ) : (
-  //     <SignIn isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-  //   );
-  // };
+  const showSurvey = () => {
+    // return <Survey />
+    console.log("showSurvey", isLoggedIn, setIsLoggedIn);
+    return isLoggedIn ? (
+      <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
+        <Survey />
+      </APIProvider>
+    ) : (
+      <SignIn isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+    );
+  };
   const showPlanning = () => {
     return isLoggedIn ? (
       <Planning />
@@ -183,7 +183,7 @@ function Main() {
         <Route path="/cityguide/search" element={showSearch()} />
         <Route path="/cityguide/mapping" element={showMapping()} />
         <Route path="/cityguide/myselection" element={showMySelection()} />
-        {/* <Route path="/cityguide/survey" element={showSurvey()} /> */}
+        <Route path="/cityguide/survey" element={showSurvey()} />
         <Route path="/cityguide/planning" element={showPlanning()} />
         <Route path="/cityguide/route" element={showRoute()} />
         <Route path="/cityguide/finished" element={showFinished()} />
