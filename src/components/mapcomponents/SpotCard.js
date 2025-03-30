@@ -54,6 +54,10 @@ const deleteSpot = (spotId) => {
     const updatedMySelection = mySelection.filter(
       (spot) => spot.id !== spotId
     );
+    console.log("spotid:", spotId)
+    removeSpotFromMySelection(spotId)
+    .then(()=>{setOpen(true)})
+    .catch((err) => message.error(err.message));
     setMySelection(updatedMySelection);
     setUpdate(true); 
   };

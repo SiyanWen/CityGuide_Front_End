@@ -66,6 +66,9 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
   // const handleSelectOpen = () => {
   //   setOpenSelect(true);
   // };
+  // const handleSelectOpen = () => {
+  //   setOpenSelect(true);
+  // };
 
   // const handleSelectClose = () => {
   //   setOpenSelect(false);
@@ -235,10 +238,15 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
     }
   };
 
-  const handlePlaceSelect = (place) => {
-    //This is where you handle your propagation
-    setSelectedPlace(place);
-  };
+  // const handlePlaceSelect = (place) => {
+  //   //This is where you handle your propagation
+  //   setSelectedPlace(place);
+  // };
+
+  // useEffect(() => {
+  //   if (!selectedPlace) selectedPlaceFlag = false;
+  //   selectedPlaceFlag = true;
+  // }, [selectedPlace])
 
   return (
     <Form layout="vertical">
@@ -285,6 +293,16 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
               style={{ width: 400, marginRight: 10, zIndex: 1 }}
               dropdownRender={(menu) => (
                 <>
+                  {/* <div
+                    onMouseDown={(e) => {
+                      if (!openSelect && selectedPlace) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    }}
+                  >
+                    Some Content
+                  </div> */}
                   {menu}
                   <Divider
                     style={{
@@ -334,7 +352,7 @@ const Form0 = ({ setDays, spotList, updateStartEnd }) => {
                         }}
                       >
                         <PlaceAutocomplete
-                          onPlaceSelect={handlePlaceSelect}
+                          onPlaceSelect={setSelectedPlace}
                           onPlace={selectedPlace}
                         />
                       </div>

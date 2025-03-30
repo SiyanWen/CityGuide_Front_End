@@ -112,16 +112,18 @@ const AddToMySelection = ({ place }) => {
     placesService.getDetails(request, (result, status) => {
       if (status === placesLib.PlacesServiceStatus.OK && result) {
         console.log(JSON.stringify(result));
+        let img_url;
+        if ("photos" in result) { 
+          img_url = JSON.stringify(result.photos[0].getUrl()); 
+          let reference = modify_url(img_url);
+          photo["photo_reference"] = `${reference}`;
+          // setPhoto(reference);
+          console.log("image reference:", reference);
+          // console.log("image url:", img_url);
+          // fetchImage(photoReference);
+          delete result.photos;
+        }
 
-        let img_url = JSON.stringify(result.photos[0].getUrl());
-        let reference = modify_url(img_url);
-        photo["photo_reference"] = `${reference}`;
-        // setPhoto(reference);
-        console.log("image reference:", reference);
-        // console.log("image url:", img_url);
-        // fetchImage(photoReference);
-
-        delete result.photos;
         console.log("Check if result alright: ", result);
         if (data === null) {
           setData(result);

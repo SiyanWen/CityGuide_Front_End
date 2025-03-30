@@ -31,7 +31,7 @@ const Plan = ({ spots }) => {
   const [surveyInfo, setSurveyInfo] = useState({
     travel_days: 1,
     spots_per_day: 2,
-    budgets: { food: 0, transport: 0, ticket: 0, total: 0 },
+    budgets: { food: 0.00, transport: 0.00, ticket: 0.00, total: 0.00 },
     start_end_spots: {},
     traffic_mode: {},
   });

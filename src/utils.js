@@ -97,10 +97,10 @@ export const postSurvey = (survey) => {
   console.log("survey_info:", survey);
   const payload = {
       daysToPlay: survey.travel_days,
-      budget: survey.budgets,
-      spotsPerday: survey.spots_per_day,
-      trafficModes: survey.traffic_mode,
       startEndPoints: survey.start_end_spots,
+      trafficModes: survey.traffic_mode,
+      spotsPerday: survey.spots_per_day,
+      budget: survey.budgets,
   };
   console.log("payload:", payload);
 
